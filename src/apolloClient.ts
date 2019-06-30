@@ -6,7 +6,9 @@ import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
-//import { withClientState } from "apollo-link-state";
+import { WebSocketLink } from "apollo-link-ws";
+import { split } from "apollo-link";
+import { getMainDefinition } from "apollo-utilities";
 
 const cache = new InMemoryCache();
 
@@ -14,6 +16,11 @@ const httpLink = createHttpLink({
   uri: "http://127.0.0.1:4000/graphql",
   //uri: "https://chat-server1234.herokuapp.com/graphql",
   credentials: "include"
+});
+
+const wsLink = new WebSocketLink({
+  uri: "ws://127.0.0.1:4000/graphql",
+  options: { reconnect: true }
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -27,6 +34,18 @@ const authLink = setContext((_, { headers }) => {
     }
   };
 });
+
+const link = split(
+  ({ query }: any) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
 /*
 //TODO:
 const stateLink=withClientState({
@@ -40,6 +59,6 @@ const stateLink=withClientState({
 })
 */
 export default new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(link),
   cache
 });

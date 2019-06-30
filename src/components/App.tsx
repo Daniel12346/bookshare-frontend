@@ -6,6 +6,8 @@ import Login from "./Login";
 import RouterPage from "./RouterPage";
 import Me from "./Me";
 import Nav from "./Nav";
+import ChatScreen from "./screens/ChatScreen";
+import Chats from "./Chats";
 
 const App = () => {
   return (
@@ -13,11 +15,15 @@ const App = () => {
       <Nav>
         <Link to="users">users</Link>
         <Link to="me">me</Link>
+        <Link to="chats">c</Link>
       </Nav>
       <Router>
-        <RouterPage component={<Login />} path="login" />
-        <RouterPage component={<Users />} path="users" />
-        <RouterPage component={<Me />} path="me" />
+        <RouterPage component={<Login />} path="/login" />
+        <RouterPage component={<Chats />} path="/chats" />
+        <ChatScreen path="/chats/:chatId" />
+
+        <RouterPage component={<Users />} path="/users" />
+        <RouterPage component={<Me />} path="/me" />
       </Router>
     </div>
   );

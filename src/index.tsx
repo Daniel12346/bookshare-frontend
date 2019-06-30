@@ -2,16 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "components/App";
 import * as serviceWorker from "./serviceWorker";
-import { ApolloProvider } from "react-apollo-hooks";
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
 import theme from "theme";
 import { ThemeProvider } from "styled-components";
-import apolloClient from "apolloClient";
+import client from "apolloClient";
+import { ApolloProvider } from "react-apollo";
 
 ReactDOM.render(
-  <ApolloProvider client={apolloClient}>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+  <ApolloProvider client={client}>
+    <ApolloHooksProvider client={client}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </ApolloHooksProvider>
   </ApolloProvider>,
   document.getElementById("root")
 );

@@ -2,6 +2,8 @@ import React from "react";
 import Login from "./Login";
 import Logout from "./Logout";
 import { useMeQuery } from "graphql/types";
+import Chats from "./Chats";
+import Messages from "./Messages";
 
 export default () => {
   //TODO: fix
@@ -13,19 +15,23 @@ export default () => {
   */
   const { data, loading, error } = useMeQuery({ errorPolicy: "all" });
   return (
-    <div>
-      {error && !data && <span>{error.message}</span>}
-      {loading && <span>Loading...</span>}
+    <>
+      <div>
+        {error && !data && <span>{error.message}</span>}
+        {loading && <span>Loading...</span>}
 
-      {data && data.me && (
-        <div>
-          <span>{data.me.firstName}</span>
-          <span>{data.me.lastName}</span>
-          <span>{data.me.id}</span>
-        </div>
-      )}
-      <div> {isAuth ? <Logout /> : <Login />}</div>
-    </div>
+        {data && data.me && (
+          <div>
+            <span>{data.me.firstName}</span>
+            <span>{data.me.lastName}</span>
+            <span>{data.me.id}</span>
+          </div>
+        )}
+        <div> {isAuth ? <Logout /> : <Login />}</div>
+      </div>
+      <Messages />
+      <Chats />
+    </>
   );
   /*
   <><div>

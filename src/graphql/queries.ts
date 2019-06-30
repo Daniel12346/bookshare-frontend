@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { UserDetails } from "./fragments";
+import { UserDetails, ChatDetails, MessageDetails } from "./fragments";
 
 export const USERS_QUERY = gql`
   query users {
@@ -17,4 +17,31 @@ export const ME_QUERY = gql`
     }
   }
   ${UserDetails}
+`;
+
+export const CHATS_QUERY = gql`
+  query chats {
+    chats {
+      ...ChatDetails
+    }
+  }
+  ${ChatDetails}
+`;
+
+export const CHAT_QUERY = gql`
+  query chat($id: ID) {
+    chat(id: $id) {
+      ...ChatDetails
+    }
+  }
+  ${ChatDetails}
+`;
+
+export const MESSAGES_QUERY = gql`
+  query messages {
+    messages {
+      ...MessageDetails
+    }
+  }
+  ${MessageDetails}
 `;
