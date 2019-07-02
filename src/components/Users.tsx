@@ -13,7 +13,7 @@ export default () => {
           data.users.map(
             user =>
               user && (
-                <li key={user.id}>{user.firstName + " " + user.lastName+ " "+ user.id}</li>
+                <li key={user.id}>{user.firstName + " " + user.lastName}</li>
               )
           )}
       </ul>

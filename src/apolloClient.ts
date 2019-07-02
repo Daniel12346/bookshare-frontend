@@ -9,8 +9,22 @@ import { setContext } from "apollo-link-context";
 import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
+import { onError } from "apollo-link-error";
+import { navigate } from "@reach/router";
 
 const cache = new InMemoryCache();
+
+const errorLink = onError(({ graphQLErrors }) => {
+  graphQLErrors &&
+    graphQLErrors.forEach(err => {
+      if (err.extensions) {
+        switch (err.extensions.code) {
+          case "UNAUTHENTICATED":
+            navigate("/");
+        }
+      }
+    });
+});
 
 const httpLink = createHttpLink({
   uri: "http://127.0.0.1:4000/graphql",
@@ -35,7 +49,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const link = split(
+const terminatingLink = split(
   ({ query }: any) => {
     const definition = getMainDefinition(query);
     return (
@@ -59,6 +73,6 @@ const stateLink=withClientState({
 })
 */
 export default new ApolloClient({
-  link: authLink.concat(link),
+  link: authLink.concat(errorLink).concat(terminatingLink),
   cache
 });

@@ -2,8 +2,6 @@ import React from "react";
 import Login from "./Login";
 import Logout from "./Logout";
 import { useMeQuery } from "graphql/types";
-import Chats from "./Chats";
-import Messages from "./Messages";
 
 export default () => {
   //TODO: fix
@@ -29,8 +27,6 @@ export default () => {
         )}
         <div> {isAuth ? <Logout /> : <Login />}</div>
       </div>
-      <Messages />
-      <Chats />
     </>
   );
   /*

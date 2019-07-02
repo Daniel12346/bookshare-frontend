@@ -1,9 +1,7 @@
 import gql from "graphql-tag";
-import * as React from "react";
-import * as ReactApollo from "react-apollo";
 import * as ReactApolloHooks from "react-apollo-hooks";
+import * as ReactApollo from "react-apollo";
 export type Maybe<T> = T | null;
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -134,13 +132,15 @@ export type UserDetailsFragment = { __typename?: "User" } & Pick<
 export type MessageDetailsFragment = { __typename?: "Message" } & Pick<
   Message,
   "id" | "content" | "createdAt"
-> & { from: { __typename?: "User" } & UserDetailsFragment };
+> & {
+    from: { __typename?: "User" } & UserDetailsFragment;
+    chat: { __typename?: "Chat" } & Pick<Chat, "id">;
+  };
 
 export type ChatDetailsFragment = { __typename?: "Chat" } & Pick<
   Chat,
   "id" | "name" | "createdAt"
 > & {
-    users: Array<Maybe<{ __typename?: "User" } & UserDetailsFragment>>;
     messages: Array<Maybe<{ __typename?: "Message" } & MessageDetailsFragment>>;
   };
 
@@ -235,6 +235,9 @@ export const MessageDetailsFragmentDoc = gql`
     }
     content
     createdAt
+    chat {
+      id
+    }
   }
   ${UserDetailsFragmentDoc}
 `;
@@ -242,15 +245,11 @@ export const ChatDetailsFragmentDoc = gql`
   fragment ChatDetails on Chat {
     id
     name
-    users {
-      ...UserDetails
-    }
     messages {
       ...MessageDetails
     }
     createdAt
   }
-  ${UserDetailsFragmentDoc}
   ${MessageDetailsFragmentDoc}
 `;
 export const UsersDocument = gql`
@@ -261,17 +260,6 @@ export const UsersDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `;
-export type UsersComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<UsersQuery, UsersQueryVariables>, "query">,
-  "variables"
-> & { variables?: UsersQueryVariables };
-
-export const UsersComponent = (props: UsersComponentProps) => (
-  <ReactApollo.Query<UsersQuery, UsersQueryVariables>
-    query={UsersDocument}
-    {...props}
-  />
-);
 
 export function useUsersQuery(
   baseOptions?: ReactApolloHooks.QueryHookOptions<UsersQueryVariables>
@@ -289,14 +277,6 @@ export const MeDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `;
-export type MeComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<MeQuery, MeQueryVariables>, "query">,
-  "variables"
-> & { variables?: MeQueryVariables };
-
-export const MeComponent = (props: MeComponentProps) => (
-  <ReactApollo.Query<MeQuery, MeQueryVariables> query={MeDocument} {...props} />
-);
 
 export function useMeQuery(
   baseOptions?: ReactApolloHooks.QueryHookOptions<MeQueryVariables>
@@ -314,17 +294,6 @@ export const ChatsDocument = gql`
   }
   ${ChatDetailsFragmentDoc}
 `;
-export type ChatsComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<ChatsQuery, ChatsQueryVariables>, "query">,
-  "variables"
-> & { variables?: ChatsQueryVariables };
-
-export const ChatsComponent = (props: ChatsComponentProps) => (
-  <ReactApollo.Query<ChatsQuery, ChatsQueryVariables>
-    query={ChatsDocument}
-    {...props}
-  />
-);
 
 export function useChatsQuery(
   baseOptions?: ReactApolloHooks.QueryHookOptions<ChatsQueryVariables>
@@ -342,17 +311,6 @@ export const ChatDocument = gql`
   }
   ${ChatDetailsFragmentDoc}
 `;
-export type ChatComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<ChatQuery, ChatQueryVariables>, "query">,
-  "variables"
-> & { variables?: ChatQueryVariables };
-
-export const ChatComponent = (props: ChatComponentProps) => (
-  <ReactApollo.Query<ChatQuery, ChatQueryVariables>
-    query={ChatDocument}
-    {...props}
-  />
-);
 
 export function useChatQuery(
   baseOptions?: ReactApolloHooks.QueryHookOptions<ChatQueryVariables>
@@ -370,17 +328,6 @@ export const MessagesDocument = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export type MessagesComponentProps = Omit<
-  Omit<ReactApollo.QueryProps<MessagesQuery, MessagesQueryVariables>, "query">,
-  "variables"
-> & { variables?: MessagesQueryVariables };
-
-export const MessagesComponent = (props: MessagesComponentProps) => (
-  <ReactApollo.Query<MessagesQuery, MessagesQueryVariables>
-    query={MessagesDocument}
-    {...props}
-  />
-);
 
 export function useMessagesQuery(
   baseOptions?: ReactApolloHooks.QueryHookOptions<MessagesQueryVariables>
@@ -398,28 +345,6 @@ export const MessageCreatedDocument = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export type MessageCreatedComponentProps = Omit<
-  Omit<
-    ReactApollo.SubscriptionProps<
-      MessageCreatedSubscription,
-      MessageCreatedSubscriptionVariables
-    >,
-    "subscription"
-  >,
-  "variables"
-> & { variables?: MessageCreatedSubscriptionVariables };
-
-export const MessageCreatedComponent = (
-  props: MessageCreatedComponentProps
-) => (
-  <ReactApollo.Subscription<
-    MessageCreatedSubscription,
-    MessageCreatedSubscriptionVariables
-  >
-    subscription={MessageCreatedDocument}
-    {...props}
-  />
-);
 
 export function useMessageCreatedSubscription(
   baseOptions?: ReactApolloHooks.SubscriptionHookOptions<
@@ -441,20 +366,6 @@ export type LogInMutationFn = ReactApollo.MutationFn<
   LogInMutation,
   LogInMutationVariables
 >;
-export type LogInComponentProps = Omit<
-  Omit<
-    ReactApollo.MutationProps<LogInMutation, LogInMutationVariables>,
-    "mutation"
-  >,
-  "variables"
-> & { variables?: LogInMutationVariables };
-
-export const LogInComponent = (props: LogInComponentProps) => (
-  <ReactApollo.Mutation<LogInMutation, LogInMutationVariables>
-    mutation={LogInDocument}
-    {...props}
-  />
-);
 
 export function useLogInMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
@@ -489,20 +400,6 @@ export type SignUpMutationFn = ReactApollo.MutationFn<
   SignUpMutation,
   SignUpMutationVariables
 >;
-export type SignUpComponentProps = Omit<
-  Omit<
-    ReactApollo.MutationProps<SignUpMutation, SignUpMutationVariables>,
-    "mutation"
-  >,
-  "variables"
-> & { variables?: SignUpMutationVariables };
-
-export const SignUpComponent = (props: SignUpComponentProps) => (
-  <ReactApollo.Mutation<SignUpMutation, SignUpMutationVariables>
-    mutation={SignUpDocument}
-    {...props}
-  />
-);
 
 export function useSignUpMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
@@ -527,23 +424,6 @@ export type CreateMessageMutationFn = ReactApollo.MutationFn<
   CreateMessageMutation,
   CreateMessageMutationVariables
 >;
-export type CreateMessageComponentProps = Omit<
-  Omit<
-    ReactApollo.MutationProps<
-      CreateMessageMutation,
-      CreateMessageMutationVariables
-    >,
-    "mutation"
-  >,
-  "variables"
-> & { variables?: CreateMessageMutationVariables };
-
-export const CreateMessageComponent = (props: CreateMessageComponentProps) => (
-  <ReactApollo.Mutation<CreateMessageMutation, CreateMessageMutationVariables>
-    mutation={CreateMessageDocument}
-    {...props}
-  />
-);
 
 export function useCreateMessageMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
@@ -568,20 +448,6 @@ export type CreateChatMutationFn = ReactApollo.MutationFn<
   CreateChatMutation,
   CreateChatMutationVariables
 >;
-export type CreateChatComponentProps = Omit<
-  Omit<
-    ReactApollo.MutationProps<CreateChatMutation, CreateChatMutationVariables>,
-    "mutation"
-  >,
-  "variables"
-> & { variables?: CreateChatMutationVariables };
-
-export const CreateChatComponent = (props: CreateChatComponentProps) => (
-  <ReactApollo.Mutation<CreateChatMutation, CreateChatMutationVariables>
-    mutation={CreateChatDocument}
-    {...props}
-  />
-);
 
 export function useCreateChatMutation(
   baseOptions?: ReactApolloHooks.MutationHookOptions<
