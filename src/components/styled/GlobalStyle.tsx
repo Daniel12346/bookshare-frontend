@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-createGlobalStyle`
+export default createGlobalStyle`
 *,*::before,*::after{
     box-sizing: border-box;
     padding:0;
@@ -9,7 +9,4 @@ createGlobalStyle`
 body{
     margin:0;
 }
-
-
-
 `;

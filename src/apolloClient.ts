@@ -14,16 +14,22 @@ import { navigate } from "@reach/router";
 
 const cache = new InMemoryCache();
 
-const errorLink = onError(({ graphQLErrors }) => {
+const errorLink = onError(({ graphQLErrors, networkError }) => {
   graphQLErrors &&
     graphQLErrors.forEach(err => {
+      if (err.extensions && err.extensions.code === "UNAUTHENTICATED") {
+        alert(err.message);
+        navigate("/login");
+      }
+      //TODO: do auth checks on more queries on the backend
+      /*
       if (err.extensions) {
         switch (err.extensions.code) {
           case "UNAUTHENTICATED":
-            navigate("/");
         }
-      }
+      }*/
     });
+  networkError && console.error(networkError.message);
 });
 
 const httpLink = createHttpLink({
@@ -74,5 +80,6 @@ const stateLink=withClientState({
 */
 export default new ApolloClient({
   link: authLink.concat(errorLink).concat(terminatingLink),
-  cache
+  cache,
+  assumeImmutableResults: true
 });

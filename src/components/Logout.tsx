@@ -1,15 +1,10 @@
 import React from "react";
-import client from "apolloClient";
-
-//TODO: auth service
+import { useMe } from "./hooks/me";
 export default () => {
-  const handleLogOut = (): void => {
-    localStorage.removeItem("token");
-    client.resetStore();
-  };
+  const { logOut } = useMe();
   return (
     <>
-      <button onClick={handleLogOut}>logOut</button>
+      <button onClick={logOut}>logOut</button>
     </>
   );
 };

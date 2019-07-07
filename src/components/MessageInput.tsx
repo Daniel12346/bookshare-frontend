@@ -1,23 +1,19 @@
 import React, { useState, FormEvent } from "react";
 import { useCreateMessageMutation } from "graphql/types";
 import styled from "styled-components";
-import { ApolloQueryResult } from "apollo-client";
 
 interface Props {
   chatId: string;
-  refetchChat: () => Promise<ApolloQueryResult<any>>;
 }
 
-export default function MessageInput({ chatId, refetchChat }: Props) {
+export default function MessageInput({ chatId }: Props) {
   const createMessage = useCreateMessageMutation();
 
   const [content, setContent] = useState("");
   const handleSendMessage = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      const message = await createMessage({ variables: { content, chatId } });
-      console.log(message);
-      // await refetchChat();
+      await createMessage({ variables: { content, chatId } });
       setContent("");
     } catch (e) {
       throw new Error(e.message);
