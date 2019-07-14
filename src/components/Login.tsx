@@ -1,12 +1,11 @@
 import React, { useState, FormEvent } from "react";
 import { useMe } from "./hooks/me";
 
-
 export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-const {logIn}=useMe();
+  const { logIn } = useMe();
   const handleLogIn = async (e: FormEvent) => {
     e.preventDefault();
     try {

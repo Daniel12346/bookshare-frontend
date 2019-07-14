@@ -6,12 +6,12 @@ export default styled.nav`
   justify-content: space-between;
   align-items: center;
 
-  ${props =>
-    props.theme &&
+  ${({ theme }) =>
+    theme &&
     css`
-      background: ${props.theme.primary1};
+      background: ${theme.colors.primary3};
       a {
-        color: ${props.theme.text1};
+        color: ${theme.colors.text1};
       }
     `}
 `;

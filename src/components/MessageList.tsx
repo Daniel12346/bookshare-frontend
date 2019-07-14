@@ -13,30 +13,6 @@ const Messages = () => {
 
   const { data, loading, error } = useMessagesQuery();
 
-  //the values this hook would return are not needed because the query above fetches all the messages,
-  //and this subscription updates the cache whenever new messages are received which updates the data the query returns
-  useMessageCreatedSubscription({
-    onSubscriptionData: ({ client, subscriptionData }) => {
-      // const { messages } = client.readQuery({ query: MESSAGES_QUERY }) as any;
-      alert("Message");
-      const newMessage =
-        subscriptionData &&
-        subscriptionData.data &&
-        subscriptionData.data.messageCreated;
-      //updating the query in the cache if the message has been received
-      if (newMessage) {
-        console.log((newMessage as Message).chat);
-      }
-      /*console.log(subscriptionData)
-      if (newMessage) {
-        client.writeQuery({
-          query: MESSAGES_QUERY,
-          data: { messages: [newMessage, ...messages] }
-        });
-      }*/
-    }
-  });
-
   //TODO: refactor completely
   return (
     <>

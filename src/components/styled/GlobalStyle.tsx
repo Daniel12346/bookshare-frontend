@@ -5,8 +5,11 @@ export default createGlobalStyle`
     box-sizing: border-box;
     padding:0;
     margin: 0;
+    border: none;
+    /*TODO: font*/
+    font-family: sans-serif
 }
 body{
-    margin:0;
+    background: ${({ theme }) => theme.colors.background1}
 }
 `;

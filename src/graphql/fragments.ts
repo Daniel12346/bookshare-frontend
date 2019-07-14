@@ -31,6 +31,10 @@ export const ChatDetails = gql`
       ...MessageDetails
     }
     createdAt
+    users {
+      ...UserDetails
+    }
+    isGroup @client
   }
   ${MessageDetails}
 `;

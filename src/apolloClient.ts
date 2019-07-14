@@ -4,13 +4,16 @@
 //not using apollo-boost because it does not support subscriptions
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { createHttpLink } from "apollo-link-http";
+//import { createHttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 import { onError } from "apollo-link-error";
 import { navigate } from "@reach/router";
+import { createUploadLink } from "apollo-upload-client";
+import typeDefs from "graphql/localSchema";
+import resolvers from "graphql/localResolvers";
 
 const cache = new InMemoryCache();
 
@@ -18,7 +21,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   graphQLErrors &&
     graphQLErrors.forEach(err => {
       if (err.extensions && err.extensions.code === "UNAUTHENTICATED") {
-        alert(err.message);
         navigate("/login");
       }
       //TODO: do auth checks on more queries on the backend
@@ -29,10 +31,11 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
         }
       }*/
     });
+  //TODO: error screen
   networkError && console.error(networkError.message);
 });
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: "http://127.0.0.1:4000/graphql",
   //uri: "https://chat-server1234.herokuapp.com/graphql",
   credentials: "include"
@@ -67,19 +70,32 @@ const terminatingLink = split(
   httpLink
 );
 /*
-//TODO:
-const stateLink=withClientState({
-  cache,resolvers:{
-    Query:{
-      isAuth:()=>{
-        return !!localStorage.getItem("token")
-      }
-    }
+const typeDefs = gql`
+  extend type Chat {
+    isGroup: Boolean!
   }
-})
+`;
+
+const resolvers = {
+  Chat: {
+    isGroup: (chat: Chat) => chat.messages.length > 2
+  }
+};
 */
+
 export default new ApolloClient({
   link: authLink.concat(errorLink).concat(terminatingLink),
   cache,
-  assumeImmutableResults: true
+  assumeImmutableResults: true,
+  typeDefs,
+  resolvers,
+  //setting the default to return any data received along with an error instead of treating it as a network error
+  defaultOptions: {
+    query: {
+      errorPolicy: "all"
+    },
+    mutate: {
+      errorPolicy: "all"
+    }
+  }
 });

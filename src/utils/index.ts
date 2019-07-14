@@ -1,6 +1,6 @@
 import { Message } from "graphql/types";
 
-//a function that is passed as a parameter to the array sort() method
+//a function used for sorting messages by date
 export const byDateDesc = (
   a: Pick<Message, "createdAt"> | null,
   b: Pick<Message, "createdAt"> | null

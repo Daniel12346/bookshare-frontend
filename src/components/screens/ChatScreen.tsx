@@ -1,6 +1,6 @@
 //import { useChatsQuery } from "graphql/types";
 import React from "react";
-import { RouteProps } from "types";
+import { RouteProps } from "typings";
 import { useChatQuery, useMessagesQuery, useMeQuery } from "graphql/types";
 import MessageInput from "components/MessageInput";
 import styled from "styled-components";
@@ -21,31 +21,34 @@ export default (props: RouteProps<Props>) => {
 
   //TODO: loader
   if (loading) return <span>Loading...</span>;
-  return (
-    <>
-      {meData && meData.me && data && data.chat && data.chat.messages.length ? (
-        <StyledContainer>
-          <StyledMessageList>
-            {data.chat.messages.map(
-              message =>
-                message && (
-                  <Message
-                    senderId={message.from.id}
-                    content={message.content}
-                    createdAt={new Date(message.createdAt)}
-                    myId={meData.me.id}
-                    key={message.id}
-                  />
-                )
-            )}
-          </StyledMessageList>
-          {chatId && <MessageInput chatId={chatId} />}
-        </StyledContainer>
-      ) : (
-        <span>No messages found</span>
-      )}
-    </>
-  );
+  if (
+    !loading &&
+    meData &&
+    meData.me &&
+    data &&
+    data.chat &&
+    data.chat.messages.length
+  )
+    return (
+      <StyledContainer>
+        <StyledMessageList>
+          {data.chat.messages.map(
+            message =>
+              message && (
+                <Message
+                  senderId={message.from.id}
+                  content={message.content}
+                  createdAt={new Date(message.createdAt)}
+                  myId={meData.me!.id}
+                  key={message.id}
+                />
+              )
+          )}
+        </StyledMessageList>
+        {chatId && <MessageInput chatId={chatId} />}
+      </StyledContainer>
+    );
+  return <span>No messages found</span>;
 };
 
 const StyledMessageList = styled.ul`
@@ -68,7 +71,7 @@ const Message = ({ senderId, content, createdAt, myId }: MessageProps) => (
     <StyledCreationDate>
       {createdAt.toLocaleTimeString("hrv")}
     </StyledCreationDate>
-    <StyledContent>{content}</StyledContent>
+    <StyledMessageContent>{content}</StyledMessageContent>
   </StyledMessage>
 );
 
@@ -78,6 +81,7 @@ interface StyledMessageProps {
 const StyledMessage = styled.li<StyledMessageProps>`
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
   align-self: ${({ isFromMe }) => (isFromMe ? "flex-start" : "flex-end")};
   background: ${({ isFromMe }) => (isFromMe ? "lightgreen" : "lightblue")};
   border-radius: ${({ isFromMe }) => (isFromMe ? "0 5% 5% 0" : "5% 0 0 5%")};
@@ -85,13 +89,27 @@ const StyledMessage = styled.li<StyledMessageProps>`
   max-width: 85%;
   padding: 0.5rem;
   right: 0px;
+
+  /*TODO: styling*/
+  ::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: darkblue;
+    border-radius: 10px;
+    z-index: -1;
+  }
 `;
 
 const StyledCreationDate = styled.span`
   font-size: 0.8rem;
 `;
 
-const StyledContent = styled.span`
+const StyledMessageContent = styled.span`
   font-size: 1.4rem;
   flex-basis: 100%;
   padding: 1rem;

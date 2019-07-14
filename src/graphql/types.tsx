@@ -26,6 +26,7 @@ export type Chat = {
   users: Array<Maybe<User>>;
   messages: Array<Maybe<Message>>;
   createdAt: Scalars["Date"];
+  isGroup: Scalars["Boolean"];
 };
 
 export type Message = {
@@ -85,8 +86,8 @@ export type MutationResult = {
 export type Query = {
   __typename?: "Query";
   users: Array<Maybe<User>>;
-  user: User;
-  me: User;
+  user?: Maybe<User>;
+  me?: Maybe<User>;
   messages: Array<Maybe<Message>>;
   message?: Maybe<Message>;
   chats: Array<Maybe<Chat>>;
@@ -139,9 +140,10 @@ export type MessageDetailsFragment = { __typename?: "Message" } & Pick<
 
 export type ChatDetailsFragment = { __typename?: "Chat" } & Pick<
   Chat,
-  "id" | "name" | "createdAt"
+  "id" | "name" | "createdAt" | "isGroup"
 > & {
     messages: Array<Maybe<{ __typename?: "Message" } & MessageDetailsFragment>>;
+    users: Array<Maybe<{ __typename?: "User" } & UserDetailsFragment>>;
   };
 
 export type UsersQueryVariables = {};
@@ -153,7 +155,7 @@ export type UsersQuery = { __typename?: "Query" } & {
 export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: "Query" } & {
-  me: { __typename?: "User" } & UserDetailsFragment;
+  me: Maybe<{ __typename?: "User" } & UserDetailsFragment>;
 };
 
 export type ChatsQueryVariables = {};
@@ -249,8 +251,13 @@ export const ChatDetailsFragmentDoc = gql`
       ...MessageDetails
     }
     createdAt
+    users {
+      ...UserDetails
+    }
+    isGroup @client
   }
   ${MessageDetailsFragmentDoc}
+  ${UserDetailsFragmentDoc}
 `;
 export const UsersDocument = gql`
   query users {
