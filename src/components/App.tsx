@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Router, Link } from "@reach/router";
 
 import UserList from "./UserList";
@@ -10,7 +10,10 @@ import ChatScreen from "./screens/ChatScreen";
 import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
 import { useInitMessageCreatedSubscription } from "./hooks/graphql";
-const App = () => {
+import { Location } from "@reach/router";
+import { AnimatePresence, motion } from "framer-motion";
+
+export default () => {
   useInitMessageCreatedSubscription();
   return (
     <>
@@ -23,16 +26,37 @@ const App = () => {
         <Link to="/settings">settings</Link>
       </Nav>
 
-      <Router>
+      <MotionRouter>
         <RouterPage component={<ChatList />} path="/" />
         <ChatScreen path="/chats/:chatId" />
         <RouterPage component={<Login />} path="/login" />
 
         <RouterPage component={<UserList />} path="/users" />
         <RouterPage component={<Me />} path="/me" />
-      </Router>
+      </MotionRouter>
     </>
   );
 };
 
-export default App;
+interface MotionRouterProps {
+  children: ReactNode;
+}
+
+const MotionRouter = ({ children }: MotionRouterProps) => (
+  <Location>
+    {({ location }) => (
+      <AnimatePresence>
+        <motion.div
+          animate={{ transition: { when: "afterChildren", delay: 300 } }}
+          exit={{
+            opacity: 0.3,
+            x: "100%"
+          }}
+          key={location.key}
+        >
+          <Router location={location}>{children}</Router>
+        </motion.div>
+      </AnimatePresence>
+    )}
+  </Location>
+);

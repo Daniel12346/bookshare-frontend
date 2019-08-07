@@ -36,6 +36,7 @@ export default (props: RouteProps<Props>) => {
             message =>
               message && (
                 <Message
+                  //TODO: rewrite with a message prop
                   senderId={message.from.id}
                   content={message.content}
                   createdAt={new Date(message.createdAt)}

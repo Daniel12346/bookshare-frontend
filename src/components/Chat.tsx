@@ -17,24 +17,32 @@ export default ({ chat }: Props) => {
       />
       <StyledChatInfo>
         <StyledChatName>{chat.name}</StyledChatName>
-        <Row>
-          <StyledChatImage src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg" />
-          <StyledChatImage src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg" />
-          <StyledChatImage src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg" />
-          {chat.users &&
-            chat.users.map(
-              user =>
-                user && (
-                  <StyledChatUsersList>
-                    <StyledChatImage src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg" />
-                    {user.firstName}
-                  </StyledChatUsersList>
-                )
-            )}
-        </Row>
+
+        {//TODO: invert
+        !chat.isGroup && (
+          <>
+            <StyledUsersSpan>users</StyledUsersSpan>
+            <Row>
+              {chat.users &&
+                chat.users.map(
+                  user =>
+                    user && (
+                      <StyledChatUsersList key={user.id}>
+                        <StyledChatImage
+                          key={user.id}
+                          src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg"
+                        />
+                        {user.firstName}
+                      </StyledChatUsersList>
+                    )
+                )}
+            </Row>
+          </>
+        )}
       </StyledChatInfo>
       <StyledChatOptions>
-        {chat.isGroup ? "group options" : "user options"}
+        {//TODO
+        chat.isGroup ? "group options" : "user options"}
       </StyledChatOptions>
     </StyledChat>
   );
@@ -49,7 +57,7 @@ const StyledChat = styled.li`
   border-radius: 15px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   min-height: 5rem;
-  margin-bottom: 4vh;
+  margin-bottom: 6vh;
   cursor: pointer;
   background: white;
   > img {
@@ -102,4 +110,13 @@ const StyledChatOptions = styled.ul`
   background: ${({ theme }) => theme.colors.primary2};
   border-radius: 0 0 15px 15px;
   margin-top: 0.5rem;
+`;
+
+//TODO: find a better name for this components
+const StyledUsersSpan = styled.span`
+  color: ${({ theme }) => theme.colors.primary2};
+  text-transform: uppercase;
+  letter-spacing: 0.8;
+  font-size: 0.8rem;
+  font-weight: bold;
 `;

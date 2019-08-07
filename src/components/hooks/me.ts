@@ -12,7 +12,6 @@ export const useMe = () => {
   const { data, loading, error } = useMeQuery();
 
   const me = data && data.me;
-  //returns true if me is not null or undefined
   const isLoggedIn = !!me;
 
   const logIn = async (variables: LogInMutationVariables): Promise<void> => {

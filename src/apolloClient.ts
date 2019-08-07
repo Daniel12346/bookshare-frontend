@@ -69,19 +69,6 @@ const terminatingLink = split(
   wsLink,
   httpLink
 );
-/*
-const typeDefs = gql`
-  extend type Chat {
-    isGroup: Boolean!
-  }
-`;
-
-const resolvers = {
-  Chat: {
-    isGroup: (chat: Chat) => chat.messages.length > 2
-  }
-};
-*/
 
 export default new ApolloClient({
   link: authLink.concat(errorLink).concat(terminatingLink),

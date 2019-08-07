@@ -38,7 +38,10 @@ const StyledForm = styled.form`
   z-index: 2;
   width: 100%;
   padding: 0.5rem 5%;
-
+  height: 3rem;
+  > * {
+    height: 100%;
+  }
   input {
     flex: 5;
     border-radius: 30px 0 0 30px;
