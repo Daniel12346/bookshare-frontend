@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 import { UserDetails, ChatDetails, MessageDetails } from "./fragments";
 
 export const USERS_QUERY = gql`
@@ -29,7 +29,7 @@ export const CHATS_QUERY = gql`
 `;
 
 export const CHAT_QUERY = gql`
-  query chat($id: ID) {
+  query chat($id: String) {
     chat(id: $id) {
       ...ChatDetails
     }

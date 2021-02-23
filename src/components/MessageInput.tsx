@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function MessageInput({ chatId }: Props) {
-  const createMessage = useCreateMessageMutation();
+  const [createMessage] = useCreateMessageMutation();
 
   const [content, setContent] = useState("");
   const handleSendMessage = async (e: FormEvent): Promise<void> => {

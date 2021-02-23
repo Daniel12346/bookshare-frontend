@@ -2,48 +2,52 @@
 //TODO: subscriptions
 
 //not using apollo-boost because it does not support subscriptions
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloClient, InMemoryCache, split } from "@apollo/client";
 //import { createHttpLink } from "apollo-link-http";
-import { setContext } from "apollo-link-context";
-import { WebSocketLink } from "apollo-link-ws";
-import { split } from "apollo-link";
-import { getMainDefinition } from "apollo-utilities";
-import { onError } from "apollo-link-error";
+import { setContext } from "@apollo/client/link/context";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { onError } from "@apollo/client/link/error";
 import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
 import typeDefs from "graphql/localSchema";
 import resolvers from "graphql/localResolvers";
 
-const cache = new InMemoryCache();
+//TODO: subscription handling
+const cache = new InMemoryCache({ typePolicies: {} });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
-  graphQLErrors &&
-    graphQLErrors.forEach(err => {
-      if (err.extensions && err.extensions.code === "UNAUTHENTICATED") {
-        navigate("/login");
-      }
-      //TODO: do auth checks on more queries on the backend
-      /*
+  graphQLErrors?.forEach((err) => {
+    if (err.extensions?.code === "UNAUTHENTICATED") {
+      navigate("/auth");
+    }
+    console.log(err);
+    //TODO: do auth checks on more queries on the backend
+    /*
       if (err.extensions) {
         switch (err.extensions.code) {
           case "UNAUTHENTICATED":
         }
       }*/
-    });
+  });
   //TODO: error screen
   networkError && console.error(networkError.message);
 });
 
 const httpLink = createUploadLink({
-  uri: "http://127.0.0.1:4000/graphql",
-  //uri: "https://chat-server1234.herokuapp.com/graphql",
-  credentials: "include"
+  //uri: "http://127.0.0.1:4000/graphql",
+  uri: "https://chat-server1234.herokuapp.com/graphql",
+  credentials: "include",
 });
 
 const wsLink = new WebSocketLink({
   uri: "ws://127.0.0.1:4000/graphql",
-  options: { reconnect: true }
+  //TODO: test on server
+
+  options: {
+    reconnect: true,
+    connectionParams: { authToken: localStorage.getItem("token") || null },
+  },
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -53,8 +57,8 @@ const authLink = setContext((_, { headers }) => {
     //sets it in the Authorization header
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : ""
-    }
+      authorization: token ? `Bearer ${token}` : "",
+    },
   };
 });
 
@@ -79,10 +83,10 @@ export default new ApolloClient({
   //setting the default to return any data received along with an error instead of treating it as a network error
   defaultOptions: {
     query: {
-      errorPolicy: "all"
+      errorPolicy: "all",
     },
     mutate: {
-      errorPolicy: "all"
-    }
-  }
+      errorPolicy: "all",
+    },
+  },
 });

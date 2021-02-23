@@ -1,11 +1,12 @@
 schema:
-  - http://localhost:4000/graphql
+  - https://chat-server1234.herokuapp.com/graphql
   - ./src/graphql/localSchema.ts
 documents:
   - ./src/graphql/fragments.ts
   - ./src/graphql/queries.ts
   - ./src/graphql/subscriptions.ts
   - ./src/graphql/mutations.ts
+  - ./src/*.gql
 overwrite: true
 generates:
   ./src/graphql/types.tsx:
@@ -19,3 +20,4 @@ generates:
       withHOC: false
       withHooks: true
       withComponent: false
+      apolloReactHooksImportFrom: "@apollo/client"

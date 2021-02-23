@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 import { UserDetails, MessageDetails, ChatDetails } from "./fragments";
 
 export const LOGIN_MUTATION = gql`
@@ -46,8 +46,8 @@ export const CREATE_MESSAGE_MUTATION = gql`
 `;
 
 export const CREATE_CHAT_MUTATION = gql`
-  mutation createChat($userId: ID, $chatName: String) {
-    createChat(userId: $userId, chatName: $chatName) {
+  mutation createChat($userId: ID) {
+    createChat(userId: $userId) {
       ...ChatDetails
     }
   }

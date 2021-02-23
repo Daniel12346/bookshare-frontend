@@ -13,4 +13,7 @@ export default createGlobalStyle`
 body{
     background: ${({ theme }) => theme.colors.background1}
 }
+form{
+
+}
 `;

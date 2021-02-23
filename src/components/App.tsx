@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
-import { Router, Link } from "@reach/router";
-
+import { Router, Link, navigate } from "@reach/router";
+import { Location } from "@reach/router";
+import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
 import Login from "./Login";
 import RouterPage from "./RouterPage";
@@ -10,30 +11,43 @@ import ChatScreen from "./screens/ChatScreen";
 import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
 import { useInitMessageCreatedSubscription } from "./hooks/graphql";
-import { Location } from "@reach/router";
-import { AnimatePresence, motion } from "framer-motion";
+import { useMe } from "./hooks/me";
+import SignUp from "./SignUp";
+import { useMeQuery } from "graphql/types";
+import AuthScreen from "./screens/AuthScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 export default () => {
+  const { data, loading, error } = useMeQuery();
   useInitMessageCreatedSubscription();
+
   return (
     <>
       <GlobalStyle />
-      <Nav>
-        <span>//TODO:icon</span>
-        <Link to="/">chats</Link>
-        <Link to="/users">users</Link>
-        <Link to="/me">me</Link>
-        <Link to="/settings">settings</Link>
-      </Nav>
+      {error && <span>{error.message.toUpperCase() !== "NOT AUTHENTICATED" && error.message}</span>}
+      {console.log(data)}
+      {!error && data?.me ?
+        (<>
+          <Nav>
+            <span>//TODO:icon</span>
+            <Link to="/">chats</Link>
+            <Link to="/users">users</Link>
+            <Link to="/me">me</Link>
+            <Link to="/settings">settings</Link>
+          </Nav>
 
-      <MotionRouter>
-        <RouterPage component={<ChatList />} path="/" />
-        <ChatScreen path="/chats/:chatId" />
-        <RouterPage component={<Login />} path="/login" />
-
-        <RouterPage component={<UserList />} path="/users" />
-        <RouterPage component={<Me />} path="/me" />
-      </MotionRouter>
+          <MotionRouter>
+            <RouterPage component={<ChatList />} path="/" />
+            <ChatScreen path="/chats/:chatId" />
+            <RouterPage component={<SettingsScreen />} path="/settings" />
+            <RouterPage component={<AuthScreen />} path="/auth" />
+            <RouterPage component={<Login />} path="/login" />
+            <RouterPage component={<SignUp />} path="/signup" />
+            <RouterPage component={<UserList />} path="/users" />
+            <RouterPage component={<Me />} path="/me" />
+          </MotionRouter>
+        </>)
+        : <AuthScreen></AuthScreen>}
     </>
   );
 };
@@ -50,7 +64,7 @@ const MotionRouter = ({ children }: MotionRouterProps) => (
           animate={{ transition: { when: "afterChildren", delay: 300 } }}
           exit={{
             opacity: 0.3,
-            x: "100%"
+            x: "100%",
           }}
           key={location.key}
         >

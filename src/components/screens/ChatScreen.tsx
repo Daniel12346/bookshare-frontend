@@ -13,7 +13,7 @@ export default (props: RouteProps<Props>) => {
   //the chatId prop is passed down by the router
   const { chatId } = props;
   const { data, loading } = useChatQuery({
-    variables: { id: chatId }
+    variables: { id: chatId },
   });
 
   useMessagesQuery();
@@ -21,19 +21,12 @@ export default (props: RouteProps<Props>) => {
 
   //TODO: loader
   if (loading) return <span>Loading...</span>;
-  if (
-    !loading &&
-    meData &&
-    meData.me &&
-    data &&
-    data.chat &&
-    data.chat.messages.length
-  )
+  if (!loading && meData?.me && data?.chat?.messages)
     return (
       <StyledContainer>
         <StyledMessageList>
           {data.chat.messages.map(
-            message =>
+            (message) =>
               message && (
                 <Message
                   //TODO: rewrite with a message prop

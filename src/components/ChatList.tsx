@@ -2,7 +2,8 @@ import React from "react";
 import Chat from "./Chat";
 
 //the interface is imported as IChat to name clashes with the Chat component
-import { useChatsQuery, Chat as IChat } from "graphql/types";
+import { useChatsQuery } from "graphql/types";
+import { Chat as IChat } from "graphql/Chat";
 import styled from "styled-components";
 
 export default () => {
@@ -11,13 +12,11 @@ export default () => {
   return (
     <StyledContainer>
       {loading && <span>Loading...</span>}
-      {error && error.message}
+      {error?.message}
       <StyledChatList>
-        {data &&
-          data.chats &&
-          data.chats.map(
-            chat => chat && <Chat key={chat.id} chat={chat as IChat} />
-          )}
+        {data?.chats?.map(
+          (chat) => chat && <Chat key={chat.id} chat={chat as IChat} />
+        )}
       </StyledChatList>
     </StyledContainer>
   );

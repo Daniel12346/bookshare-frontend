@@ -1,37 +1,31 @@
 import {
   useMeQuery,
   LogInMutationVariables,
-  useLogInMutation
+  useLogInMutation,
 } from "graphql/types";
 import apolloClient from "apolloClient";
 import { ME_QUERY } from "graphql/queries";
+import { navigate } from "@reach/router";
 
 export const useMe = () => {
-  const logInMutation = useLogInMutation();
+
 
   const { data, loading, error } = useMeQuery();
 
-  const me = data && data.me;
-  const isLoggedIn = !!me;
+  const me = data?.me;
 
-  const logIn = async (variables: LogInMutationVariables): Promise<void> => {
-    logInMutation({
-      variables,
-      //the update function sets the received jwt inside the storage
-      update: (_, { data }) => {
-        const token = data && data.logIn;
-        token && localStorage.setItem("token", token);
-      },
-      //after the mutation, ME_QUERY is refetched with the token in the Authorization header (setting the header was set up in apolloClient.ts)
-      refetchQueries: [{ query: ME_QUERY }]
-    });
-  };
+
 
   const logOut = async () => {
-    localStorage.removeItem("token");
-    //calling both clearStore and resetStore to make sure the store is cleared and the queries are not refetched
-    await apolloClient.clearStore();
-    await apolloClient.resetStore();
+    try {
+      localStorage.removeItem("token");
+      //calling both clearStore and resetStore to make sure the store is cleared and the queries are not refetched
+      await apolloClient.clearStore();
+      await apolloClient.resetStore();
+    } catch (e) {
+      console.log(e);
+    }
+    navigate("/auth");
   };
-  return { me, loading, error, isLoggedIn, logIn, logOut };
+  return { me, loading, error, logOut };
 };

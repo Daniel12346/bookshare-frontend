@@ -1,7 +1,7 @@
 import React from "react";
 import { navigate } from "@reach/router";
 import styled from "styled-components";
-import { Chat } from "graphql/types";
+import { Chat } from "graphql/Chat";
 import { Row } from "./styled/utils";
 
 interface Props {
@@ -18,14 +18,14 @@ export default ({ chat }: Props) => {
       <StyledChatInfo>
         <StyledChatName>{chat.name}</StyledChatName>
 
-        {//TODO: invert
-        !chat.isGroup && (
-          <>
-            <StyledUsersSpan>users</StyledUsersSpan>
-            <Row>
-              {chat.users &&
-                chat.users.map(
-                  user =>
+        {
+          //TODO: invert
+          !chat.isGroup && (
+            <>
+              <StyledUsersSpan>users</StyledUsersSpan>
+              <Row>
+                {chat.users.map(
+                  (user) =>
                     user && (
                       <StyledChatUsersList key={user.id}>
                         <StyledChatImage
@@ -36,13 +36,16 @@ export default ({ chat }: Props) => {
                       </StyledChatUsersList>
                     )
                 )}
-            </Row>
-          </>
-        )}
+              </Row>
+            </>
+          )
+        }
       </StyledChatInfo>
       <StyledChatOptions>
-        {//TODO
-        chat.isGroup ? "group options" : "user options"}
+        {
+          //TODO
+          chat.isGroup ? "group options" : "user options"
+        }
       </StyledChatOptions>
     </StyledChat>
   );
