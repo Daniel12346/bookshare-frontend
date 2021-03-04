@@ -41,9 +41,7 @@ const httpLink = createUploadLink({
 });
 
 const wsLink = new WebSocketLink({
-  uri: "ws://127.0.0.1:4000/graphql",
-  //TODO: test on server
-
+  uri: "wss://chat-server1234.herokuapp.com/graphql",
   options: {
     reconnect: true,
     connectionParams: { authToken: localStorage.getItem("token") || null },

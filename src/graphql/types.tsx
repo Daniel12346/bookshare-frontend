@@ -21,6 +21,7 @@ export type User = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
+  profileImageUrl?: Maybe<Scalars['String']>;
   chats: Array<Maybe<Chat>>;
   messages: Array<Maybe<Message>>;
 };
@@ -35,6 +36,7 @@ export type Chat = {
   name?: Maybe<Scalars['String']>;
   users: Array<Maybe<User>>;
 };
+
 
 export type MutationResult = {
   __typename?: 'MutationResult';
@@ -58,6 +60,9 @@ export type Mutation = {
   logIn?: Maybe<Scalars['String']>;
   createMessage?: Maybe<Message>;
   createChat?: Maybe<Chat>;
+  deleteMessage?: Maybe<MutationResult>;
+  deleteChat?: Maybe<MutationResult>;
+  uploadImage?: Maybe<MutationResult>;
 };
 
 
@@ -81,7 +86,6 @@ export type MutationLogInArgs = {
 
 
 export type MutationCreateMessageArgs = {
-  receiverId?: Maybe<Scalars['ID']>;
   chatId?: Maybe<Scalars['ID']>;
   content?: Maybe<Scalars['String']>;
 };
@@ -91,14 +95,29 @@ export type MutationCreateChatArgs = {
   userId?: Maybe<Scalars['ID']>;
 };
 
+
+export type MutationDeleteMessageArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationDeleteChatArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationUploadImageArgs = {
+  file?: Maybe<Scalars['Upload']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   users: Array<Maybe<User>>;
-  user: User;
-  me: User;
+  user?: Maybe<User>;
+  me?: Maybe<User>;
   messages: Array<Maybe<Message>>;
   chats: Array<Maybe<Chat>>;
-  chat: Chat;
+  chat?: Maybe<Chat>;
 };
 
 
@@ -130,10 +149,9 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
-
 export type UserDetailsFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'firstName' | 'lastName' | 'id'>
+  & Pick<User, 'firstName' | 'lastName' | 'id' | 'profileImageUrl'>
 );
 
 export type MessageDetailsFragment = (
@@ -214,6 +232,19 @@ export type CreateChatMutation = (
   )> }
 );
 
+export type UploadImageMutationVariables = Exact<{
+  file?: Maybe<Scalars['Upload']>;
+}>;
+
+
+export type UploadImageMutation = (
+  { __typename?: 'Mutation' }
+  & { uploadImage?: Maybe<(
+    { __typename?: 'MutationResult' }
+    & Pick<MutationResult, 'success'>
+  )> }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -230,10 +261,14 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { me: (
+  & { me?: Maybe<(
     { __typename?: 'User' }
+    & { chats: Array<Maybe<(
+      { __typename?: 'Chat' }
+      & Pick<Chat, 'id'>
+    )>> }
     & UserDetailsFragment
-  ) }
+  )> }
 );
 
 export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -254,10 +289,10 @@ export type ChatQueryVariables = Exact<{
 
 export type ChatQuery = (
   { __typename?: 'Query' }
-  & { chat: (
+  & { chat?: Maybe<(
     { __typename?: 'Chat' }
     & ChatDetailsFragment
-  ) }
+  )> }
 );
 
 export type MessagesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -287,6 +322,7 @@ export const UserDetailsFragmentDoc = gql`
   firstName
   lastName
   id
+  profileImageUrl
 }
     `;
 export const MessageDetailsFragmentDoc = gql`
@@ -448,6 +484,38 @@ export function useCreateChatMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
 export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
 export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
+export const UploadImageDocument = gql`
+    mutation uploadImage($file: Upload) {
+  uploadImage(file: $file) {
+    success
+  }
+}
+    `;
+export type UploadImageMutationFn = Apollo.MutationFunction<UploadImageMutation, UploadImageMutationVariables>;
+
+/**
+ * __useUploadImageMutation__
+ *
+ * To run a mutation, you first call `useUploadImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadImageMutation, { data, loading, error }] = useUploadImageMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadImageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UploadImageMutation, UploadImageMutationVariables>) {
+        return ApolloReactHooks.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument, baseOptions);
+      }
+export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
+export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
+export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
 export const UsersDocument = gql`
     query users {
   users {
@@ -483,6 +551,9 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const MeDocument = gql`
     query me {
   me {
+    chats {
+      id
+    }
     ...UserDetails
   }
 }

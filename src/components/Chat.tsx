@@ -3,51 +3,58 @@ import { navigate } from "@reach/router";
 import styled from "styled-components";
 import { Chat } from "graphql/Chat";
 import { Row } from "./styled/utils";
+import { useChatQuery } from "graphql/types";
 
 interface Props {
-  chat: Chat;
+  chatId: string;
 }
 
-export default ({ chat }: Props) => {
-  return (
-    <StyledChat key={chat.id} onClick={() => navigate(`chats/${chat.id}`)}>
-      <StyledChatImage
-        src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg"
-        large
-      />
-      <StyledChatInfo>
-        <StyledChatName>{chat.name}</StyledChatName>
+export default ({ chatId }: Props) => {
+  const { data, loading, error } = useChatQuery({ variables: { id: chatId } });
+  const chat = data?.chat;
 
-        {
-          //TODO: invert
-          !chat.isGroup && (
-            <>
-              <StyledUsersSpan>users</StyledUsersSpan>
-              <Row>
-                {chat.users.map(
-                  (user) =>
-                    user && (
-                      <StyledChatUsersList key={user.id}>
-                        <StyledChatImage
-                          key={user.id}
-                          src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg"
-                        />
-                        {user.firstName}
-                      </StyledChatUsersList>
-                    )
-                )}
-              </Row>
-            </>
-          )
-        }
-      </StyledChatInfo>
-      <StyledChatOptions>
-        {
-          //TODO
-          chat.isGroup ? "group options" : "user options"
-        }
-      </StyledChatOptions>
-    </StyledChat>
+  if (error) return <span>{error.message}</span>;
+  return (
+    data?.chat ?
+      (<StyledChat key={chatId} onClick={() => navigate(`chats/${chatId}`)}>
+        <StyledChatImage
+          src="user_placeholder.png"
+          large
+        />
+        <StyledChatInfo>
+          {//TODO: lipše napisat
+          }
+          <StyledChatName>{data.chat?.isGroup ? data?.chat?.name : `${data.chat.users[0]?.firstName} ${data.chat.users[0]?.lastName}`}</StyledChatName>
+
+          {
+            chat?.isGroup && (
+              <>
+                <StyledUsersSpan>users</StyledUsersSpan>
+                <Row>
+                  {chat.users.map(
+                    (user) =>
+                      user && (
+                        <StyledChatUsersList key={user.id}>
+                          <StyledChatImage
+                            key={user.id}
+                            src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg"
+                          />
+                          {user.firstName}
+                        </StyledChatUsersList>
+                      )
+                  )}
+                </Row>
+              </>
+            )
+          }
+        </StyledChatInfo>
+        <StyledChatOptions>
+          {
+            //TODO
+            chat?.isGroup ? "group options" : "user options"
+          }
+        </StyledChatOptions>
+      </StyledChat>) : null
   );
 };
 

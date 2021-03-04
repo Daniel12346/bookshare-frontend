@@ -5,10 +5,10 @@ import { useSignUpMutation } from "graphql/types";
 const SignUp = () => {
   const [signUp] = useSignUpMutation({
     variables: {
-      firstName: "Daniel",
+      firstName: "Daniel3",
       lastName: "Vrandečić",
-      email: "danezoki@gmail.com",
-      password: "Danezoki"
+      email: "danezoki3@gmail.com",
+      password: "Danezoki3"
     }
   });
   const handleSignUp = async () => {

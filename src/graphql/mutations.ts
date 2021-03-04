@@ -53,3 +53,11 @@ export const CREATE_CHAT_MUTATION = gql`
   }
   ${ChatDetails}
 `;
+
+export const UPLOAD_Image_MUTATION = gql`
+  mutation uploadImage($file: Upload){
+    uploadImage(file: $file){
+      success
+    }
+  }
+`

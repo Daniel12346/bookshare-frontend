@@ -7,19 +7,15 @@ interface Props {
 }
 
 export default function MessageInput({ chatId }: Props) {
-  const [createMessage] = useCreateMessageMutation();
+  const [createMessage, { error }] = useCreateMessageMutation();
 
   const [content, setContent] = useState("");
   const handleSendMessage = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
-    try {
-      await createMessage({ variables: { content, chatId } });
-      setContent("");
-    } catch (e) {
-      throw new Error(e.message);
-    }
+    createMessage({ variables: { content, chatId } });
+    setContent("");
   };
-
+  console.log(error);
   return (
     <StyledForm onSubmit={handleSendMessage}>
       <input value={content} onChange={e => setContent(e.target.value)} />

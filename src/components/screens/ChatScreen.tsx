@@ -21,28 +21,26 @@ export default (props: RouteProps<Props>) => {
 
   //TODO: loader
   if (loading) return <span>Loading...</span>;
-  if (!loading && meData?.me && data?.chat?.messages)
-    return (
-      <StyledContainer>
-        <StyledMessageList>
-          {data.chat.messages.map(
-            (message) =>
-              message && (
-                <Message
-                  //TODO: rewrite with a message prop
-                  senderId={message.from.id}
-                  content={message.content}
-                  createdAt={new Date(message.createdAt)}
-                  myId={meData.me!.id}
-                  key={message.id}
-                />
-              )
-          )}
-        </StyledMessageList>
-        {chatId && <MessageInput chatId={chatId} />}
-      </StyledContainer>
-    );
-  return <span>No messages found</span>;
+  return (
+    <StyledContainer>
+      <StyledMessageList>
+        {meData && data?.chat?.messages.map(
+          (message) =>
+            message && (
+              <Message
+                //TODO: rewrite with a message prop
+                senderId={message.from.id}
+                content={message.content}
+                createdAt={new Date(message.createdAt)}
+                myId={meData?.me?.id!}
+                key={message.id}
+              />
+            )
+        )}
+      </StyledMessageList>
+      {chatId && <MessageInput chatId={chatId} />}
+    </StyledContainer>
+  );
 };
 
 const StyledMessageList = styled.ul`
