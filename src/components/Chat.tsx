@@ -20,7 +20,7 @@ export default ({ chatId }: Props) => {
   return (
     data?.chat ?
       (<StyledChat key={chatId} onClick={() => navigate(`chats/${chatId}`)}>
-        <StyledChatImage
+        <StyledImage
           src={otherUser?.profileImageUrl || ""}
           large
         />
@@ -38,11 +38,10 @@ export default ({ chatId }: Props) => {
                     (user) =>
                       user && (
                         <StyledChatUsersList key={user.id}>
-                          <StyledChatImage
+                          <StyledImage
                             key={user.id}
-                            src="https://raw.githubusercontent.com/LearnWebCode/welcome-to-git/master/images/dog.jpg"
+                            src={user.profileImageUrl || ""}
                           />
-                          {user.firstName}
                         </StyledChatUsersList>
                       )
                   )}
@@ -51,7 +50,7 @@ export default ({ chatId }: Props) => {
             )
           }
         </StyledChatInfo>
-        <StyledChatOptions>
+        <StyledChatOptions isGroup={chat?.isGroup || false}>
           {
             //TODO
             chat?.isGroup ? "group options" : "user options"
@@ -78,11 +77,11 @@ const StyledChat = styled.li`
   }
 `;
 
-interface StyledChatImageProps {
+interface StyledImageProps {
   large?: boolean;
 }
 
-const StyledChatImage = styled.img<StyledChatImageProps>`
+const StyledImage = styled.img<StyledImageProps>`
   height: ${({ large }) => (large ? "6rem" : "2.5rem")};
   width: ${({ large }) => (large ? "6rem" : "2.5rem")};
   display: block;
@@ -108,7 +107,11 @@ const StyledChatName = styled.span`
   margin: 0.7rem 0;
 `;
 
-const StyledChatOptions = styled.ul`
+interface StyledChatOptionsProps {
+  isGroup: boolean
+}
+
+const StyledChatOptions = styled.ul<StyledChatOptionsProps>`
   list-style: none;
   flex: 1 0 100%;
   display: flex;
@@ -116,14 +119,14 @@ const StyledChatOptions = styled.ul`
   align-items: center;
   justify-content: space-evenly;
   min-height: 2rem;
-  background: ${({ theme }) => theme.colors.primary2};
+  background: ${({ theme, isGroup }) => isGroup ? theme.colors.primary4 : theme.colors.primary2};
   border-radius: 0 0 15px 15px;
   margin-top: 0.5rem;
 `;
 
 //TODO: find a better name for this components
 const StyledUsersSpan = styled.span`
-  color: ${({ theme }) => theme.colors.primary2};
+  color: ${({ theme }) => theme.colors.primary4};
   text-transform: uppercase;
   letter-spacing: 0.8;
   font-size: 0.8rem;

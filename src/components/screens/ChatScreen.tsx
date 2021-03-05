@@ -1,7 +1,7 @@
 //import { useChatsQuery } from "graphql/types";
 import React from "react";
 import { RouteProps } from "typings";
-import { useChatQuery, useMessagesQuery, useMeQuery } from "graphql/types";
+import { useChatQuery, useMessagesQuery, useMeQuery, User } from "graphql/types";
 import MessageInput from "components/MessageInput";
 import styled from "styled-components";
 
@@ -28,12 +28,12 @@ export default (props: RouteProps<Props>) => {
           (message) =>
             message && (
               <Message
-                //TODO: rewrite with a message prop
-                senderId={message.from.id}
+                sender={message.from}
                 content={message.content}
                 createdAt={new Date(message.createdAt)}
                 myId={meData?.me?.id!}
                 key={message.id}
+                withUserInfo={data.chat?.isGroup || false}
               />
             )
         )}
@@ -53,17 +53,21 @@ const StyledMessageList = styled.ul`
 `;
 
 interface MessageProps {
-  senderId: string;
+  sender: Pick<User, "firstName" | "lastName" | "id" | "profileImageUrl">;
   content: string;
   createdAt: Date;
   myId: string;
+  withUserInfo: boolean;
 }
 
-const Message = ({ senderId, content, createdAt, myId }: MessageProps) => (
-  <StyledMessage isFromMe={senderId === myId}>
-    <StyledCreationDate>
-      {createdAt.toLocaleTimeString("hrv")}
-    </StyledCreationDate>
+const Message = ({ sender, content, createdAt, myId, withUserInfo }: MessageProps) => (
+  <StyledMessage isFromMe={sender.id === myId}>
+    <StyledMessageInfo>
+      <StyledCreationDate>
+        {createdAt.toLocaleTimeString("hrv")}
+      </StyledCreationDate>
+      {withUserInfo && <StyledSenderInfo>{`${sender.firstName}`}</StyledSenderInfo>}
+    </StyledMessageInfo>
     <StyledMessageContent>{content}</StyledMessageContent>
   </StyledMessage>
 );
@@ -99,11 +103,24 @@ const StyledMessage = styled.li<StyledMessageProps>`
 `;
 
 const StyledCreationDate = styled.span`
+  min-height: 2rem;
   font-size: 0.8rem;
 `;
 
+const StyledSenderInfo = styled.span`
+  min-height: 2rem;
+  font-size: 0.8rem;
+`;
+
+const StyledMessageInfo = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  overflow-y: hidden;
+`
+
 const StyledMessageContent = styled.span`
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   flex-basis: 100%;
   padding: 1rem;
 `;

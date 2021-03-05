@@ -57,12 +57,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
   deleteUser?: Maybe<MutationResult>;
+  addUserToChat?: Maybe<Chat>;
   logIn?: Maybe<Scalars['String']>;
   createMessage?: Maybe<Message>;
   createChat?: Maybe<Chat>;
   deleteMessage?: Maybe<MutationResult>;
   deleteChat?: Maybe<MutationResult>;
   uploadImage?: Maybe<MutationResult>;
+  uploadChatImage?: Maybe<MutationResult>;
 };
 
 
@@ -76,6 +78,12 @@ export type MutationCreateUserArgs = {
 
 export type MutationDeleteUserArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationAddUserToChatArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  chatId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -107,6 +115,12 @@ export type MutationDeleteChatArgs = {
 
 
 export type MutationUploadImageArgs = {
+  file?: Maybe<Scalars['Upload']>;
+};
+
+
+export type MutationUploadChatImageArgs = {
+  chatId?: Maybe<Scalars['ID']>;
   file?: Maybe<Scalars['Upload']>;
 };
 

@@ -7,8 +7,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { onError } from "@apollo/client/link/error";
 import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
-
-// import typeDefs from "graphql/localSchema";
+import typeDefs from "graphql/localSchema";
 // import resolvers from "graphql/localResolvers";
 import { User } from "graphql/types";
 
@@ -96,7 +95,7 @@ export default new ApolloClient({
   link: authLink.concat(errorLink).concat(terminatingLink),
   cache,
   assumeImmutableResults: true,
-  // typeDefs,
+  typeDefs,
   // resolvers,
   //setting the default to return any data received along with an error instead of treating it as a network error
   defaultOptions: {
