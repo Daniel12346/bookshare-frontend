@@ -13,7 +13,7 @@ export const useMe = () => {
   const { data, loading, error } = useMeQuery();
 
   const me = data?.me;
-
+  const id = me?.id ?? null;
 
 
   const logOut = async () => {
@@ -27,5 +27,5 @@ export const useMe = () => {
     }
     navigate("/auth");
   };
-  return { me, loading, error, logOut };
+  return { me, id, loading, error, logOut };
 };

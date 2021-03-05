@@ -1,6 +1,5 @@
 import React from "react";
-import Login from "./Login";
-import Logout from "./Logout";
+import styled from "styled-components";
 import { useMe } from "./hooks/me";
 
 export default () => {
@@ -20,15 +19,16 @@ export default () => {
   }
   return (
     <>
-      <div>
-        {me && (
+      {me && (
+        <div>
+          <StyledUserImage src={me.profileImageUrl || ""}></StyledUserImage>
           <div>
             <span>{me.firstName}</span>
             <span>{me.lastName}</span>
             <span>{me.id}</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
   /*
@@ -47,3 +47,17 @@ export default () => {
           <div>
       </div></>)*/
 };
+
+// interface StyledChatImageProps {
+//   large?: boolean;
+// }
+
+const StyledUserImage = styled.img`
+  max-width: 10rem;
+  height: 10rem;
+  display: block;
+  border-radius: 50%;
+  object-position: center;
+  object-fit: cover;
+  border: 5px white solid;
+`;

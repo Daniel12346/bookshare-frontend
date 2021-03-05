@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Chat } from "graphql/Chat";
 import { Row } from "./styled/utils";
 import { useChatQuery } from "graphql/types";
+import { useMe } from "./hooks/me";
 
 interface Props {
   chatId: string;
@@ -12,13 +13,15 @@ interface Props {
 export default ({ chatId }: Props) => {
   const { data, loading, error } = useChatQuery({ variables: { id: chatId } });
   const chat = data?.chat;
+  const { id: myId } = useMe();
+  const otherUser = chat?.users.find(user => user?.id !== myId);
 
   if (error) return <span>{error.message}</span>;
   return (
     data?.chat ?
       (<StyledChat key={chatId} onClick={() => navigate(`chats/${chatId}`)}>
         <StyledChatImage
-          src="user_placeholder.png"
+          src={otherUser?.profileImageUrl || ""}
           large
         />
         <StyledChatInfo>
@@ -82,14 +85,10 @@ interface StyledChatImageProps {
 const StyledChatImage = styled.img<StyledChatImageProps>`
   height: ${({ large }) => (large ? "6rem" : "2.5rem")};
   width: ${({ large }) => (large ? "6rem" : "2.5rem")};
-  left: 0;
   display: block;
-  align-self: center;
   border-radius: 50%;
   object-position: center;
   object-fit: cover;
-  position: relative;
-
   border: 5px white solid;
 `;
 const StyledChatInfo = styled.div`

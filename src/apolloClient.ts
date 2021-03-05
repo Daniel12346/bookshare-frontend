@@ -1,20 +1,40 @@
 //sets up the apollo client
-//TODO: subscriptions
-
 //not using apollo-boost because it does not support subscriptions
 import { ApolloClient, InMemoryCache, split } from "@apollo/client";
-//import { createHttpLink } from "apollo-link-http";
 import { setContext } from "@apollo/client/link/context";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { onError } from "@apollo/client/link/error";
 import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
-import typeDefs from "graphql/localSchema";
-import resolvers from "graphql/localResolvers";
 
-//TODO: subscription handling
-const cache = new InMemoryCache({ typePolicies: {} });
+// import typeDefs from "graphql/localSchema";
+// import resolvers from "graphql/localResolvers";
+import { User } from "graphql/types";
+
+const cache = new InMemoryCache({
+  typePolicies: {
+    Chat: {
+      fields: {
+        isGroup: {
+          read(_, { readField }) {
+            const users: any = readField("users");
+            return users?.length > 2 ?? 0;
+          }
+        }
+      }
+    },
+    User: {
+      fields: {
+        profileImageUrl: {
+          read(existing) {
+            return existing || "user_placeholder.png"
+          }
+        }
+      }
+    }
+  }
+});
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   graphQLErrors?.forEach((err) => {
@@ -76,8 +96,8 @@ export default new ApolloClient({
   link: authLink.concat(errorLink).concat(terminatingLink),
   cache,
   assumeImmutableResults: true,
-  typeDefs,
-  resolvers,
+  // typeDefs,
+  // resolvers,
   //setting the default to return any data received along with an error instead of treating it as a network error
   defaultOptions: {
     query: {

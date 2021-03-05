@@ -47,8 +47,9 @@ const StyledMessageList = styled.ul`
   list-style: none;
   display: flex;
   flex-flow: column wrap;
-  margin: 5vh 0 10vh;
+  margin: 2vh 0 8vh;
   max-width: 50rem;
+  min-width: 60%;
 `;
 
 interface MessageProps {
@@ -81,7 +82,7 @@ const StyledMessage = styled.li<StyledMessageProps>`
   max-width: 85%;
   padding: 0.5rem;
   right: 0px;
-
+  overflow-y: hidden;
   /*TODO: styling*/
   ::after {
     content: "";
