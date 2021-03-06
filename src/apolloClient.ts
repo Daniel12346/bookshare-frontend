@@ -8,8 +8,6 @@ import { onError } from "@apollo/client/link/error";
 import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
 import typeDefs from "graphql/localSchema";
-// import resolvers from "graphql/localResolvers";
-import { User } from "graphql/types";
 
 const cache = new InMemoryCache({
   typePolicies: {

@@ -54,10 +54,18 @@ export const CREATE_CHAT_MUTATION = gql`
   ${ChatDetails}
 `;
 
-export const UPLOAD_Image_MUTATION = gql`
+export const UPLOAD_IMAGE_MUTATION = gql`
   mutation uploadImage($file: Upload){
     uploadImage(file: $file){
       success
     }
   }
+`
+export const ADD_USER_TO_CHAT_MUTATION = gql`
+  mutation addUserToChat($userId: ID, $chatId: ID){
+    addUserToChat(userId: $userId, chatId: $chatId){
+      ...ChatDetails
+    }
+  }
+  ${ChatDetails}
 `

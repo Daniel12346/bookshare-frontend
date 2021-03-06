@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Router, Link, navigate } from "@reach/router";
+import { Router, Link } from "@reach/router";
 import { Location } from "@reach/router";
 import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
@@ -11,14 +11,13 @@ import ChatScreen from "./screens/ChatScreen";
 import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
 import { useInitMessageCreatedSubscription } from "./hooks/graphql";
-import { useMe } from "./hooks/me";
 import SignUp from "./SignUp";
 import { useMeQuery } from "graphql/types";
 import AuthScreen from "./screens/AuthScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 
 export default () => {
-  const { data, loading, error } = useMeQuery();
+  const { data, error } = useMeQuery();
   useInitMessageCreatedSubscription();
 
   return (

@@ -5,13 +5,14 @@ import { Chat } from "graphql/Chat";
 import { Row } from "./styled/utils";
 import { useChatQuery } from "graphql/types";
 import { useMe } from "./hooks/me";
+import ChatOptions from "./ChatOptions";
 
 interface Props {
   chatId: string;
 }
 
 export default ({ chatId }: Props) => {
-  const { data, loading, error } = useChatQuery({ variables: { id: chatId } });
+  const { data, error } = useChatQuery({ variables: { id: chatId } });
   const chat = data?.chat;
   const { id: myId } = useMe();
   const otherUser = chat?.users.find(user => user?.id !== myId);
@@ -19,12 +20,13 @@ export default ({ chatId }: Props) => {
   if (error) return <span>{error.message}</span>;
   return (
     data?.chat ?
-      (<StyledChat key={chatId} onClick={() => navigate(`chats/${chatId}`)}>
+      (<StyledChat key={chatId}>
         <StyledImage
+          onClick={() => navigate(`chats/${chatId}`)}
           src={otherUser?.profileImageUrl || ""}
           large
         />
-        <StyledChatInfo>
+        <StyledChatInfo onClick={() => navigate(`chats/${chatId}`)}>
           {//TODO: lipše napisat
           }
           <StyledChatName>{data.chat?.isGroup ? data?.chat?.name : `${data.chat.users[0]?.firstName} ${data.chat.users[0]?.lastName}`}</StyledChatName>
@@ -50,12 +52,7 @@ export default ({ chatId }: Props) => {
             )
           }
         </StyledChatInfo>
-        <StyledChatOptions isGroup={chat?.isGroup || false}>
-          {
-            //TODO
-            chat?.isGroup ? "group options" : "user options"
-          }
-        </StyledChatOptions>
+        <ChatOptions chat={data?.chat as Chat}></ChatOptions>
       </StyledChat>) : null
   );
 };
@@ -107,22 +104,6 @@ const StyledChatName = styled.span`
   margin: 0.7rem 0;
 `;
 
-interface StyledChatOptionsProps {
-  isGroup: boolean
-}
-
-const StyledChatOptions = styled.ul<StyledChatOptionsProps>`
-  list-style: none;
-  flex: 1 0 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: space-evenly;
-  min-height: 2rem;
-  background: ${({ theme, isGroup }) => isGroup ? theme.colors.primary4 : theme.colors.primary2};
-  border-radius: 0 0 15px 15px;
-  margin-top: 0.5rem;
-`;
 
 //TODO: find a better name for this components
 const StyledUsersSpan = styled.span`

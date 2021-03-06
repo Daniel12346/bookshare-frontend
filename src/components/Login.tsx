@@ -1,7 +1,7 @@
 import { navigate } from "@reach/router";
 import { ME_QUERY } from "graphql/queries";
 import { useLogInMutation } from "graphql/types";
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
 
 export default () => {
   const [email, setEmail] = useState("");

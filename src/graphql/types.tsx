@@ -259,6 +259,20 @@ export type UploadImageMutation = (
   )> }
 );
 
+export type AddUserToChatMutationVariables = Exact<{
+  userId?: Maybe<Scalars['ID']>;
+  chatId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type AddUserToChatMutation = (
+  { __typename?: 'Mutation' }
+  & { addUserToChat?: Maybe<(
+    { __typename?: 'Chat' }
+    & ChatDetailsFragment
+  )> }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -530,6 +544,39 @@ export function useUploadImageMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const AddUserToChatDocument = gql`
+    mutation addUserToChat($userId: ID, $chatId: ID) {
+  addUserToChat(userId: $userId, chatId: $chatId) {
+    ...ChatDetails
+  }
+}
+    ${ChatDetailsFragmentDoc}`;
+export type AddUserToChatMutationFn = Apollo.MutationFunction<AddUserToChatMutation, AddUserToChatMutationVariables>;
+
+/**
+ * __useAddUserToChatMutation__
+ *
+ * To run a mutation, you first call `useAddUserToChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToChatMutation, { data, loading, error }] = useAddUserToChatMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useAddUserToChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddUserToChatMutation, AddUserToChatMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddUserToChatMutation, AddUserToChatMutationVariables>(AddUserToChatDocument, baseOptions);
+      }
+export type AddUserToChatMutationHookResult = ReturnType<typeof useAddUserToChatMutation>;
+export type AddUserToChatMutationResult = Apollo.MutationResult<AddUserToChatMutation>;
+export type AddUserToChatMutationOptions = Apollo.BaseMutationOptions<AddUserToChatMutation, AddUserToChatMutationVariables>;
 export const UsersDocument = gql`
     query users {
   users {

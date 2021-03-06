@@ -1,10 +1,7 @@
 import {
   useMeQuery,
-  LogInMutationVariables,
-  useLogInMutation,
 } from "graphql/types";
 import apolloClient from "apolloClient";
-import { ME_QUERY } from "graphql/queries";
 import { navigate } from "@reach/router";
 
 export const useMe = () => {

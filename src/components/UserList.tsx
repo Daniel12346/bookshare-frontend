@@ -1,10 +1,10 @@
 import React from "react";
 import { useCreateChatMutation, useMeQuery, useUsersQuery } from "graphql/types";
-import { CHATS_QUERY, ME_QUERY } from "graphql/queries";
+import { ME_QUERY } from "graphql/queries";
 
 export default () => {
   const { data: meData } = useMeQuery();
-  const { data, loading, error } = useUsersQuery();
+  const { data, loading } = useUsersQuery();
   const [createChat, { error: mutationError }] = useCreateChatMutation({ refetchQueries: [{ query: ME_QUERY }], onCompleted: (data) => { console.log("completed", data) } });
   return (
     <>
@@ -13,7 +13,7 @@ export default () => {
       }
       {mutationError && mutationError.message}
       <ul>
-        {data?.users?.filter(user => user?.id != meData?.me?.id).map(
+        {data?.users?.filter(user => user?.id !== meData?.me?.id).map(
           (user) =>
             user && (
               <li key={user.id}>

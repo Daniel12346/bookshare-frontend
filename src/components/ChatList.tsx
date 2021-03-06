@@ -3,7 +3,6 @@ import Chat from "./Chat";
 
 //the interface is imported as IChat to name clashes with the Chat component
 import { useMeQuery } from "graphql/types";
-import { Chat as IChat } from "graphql/Chat";
 import styled from "styled-components";
 
 export default () => {
