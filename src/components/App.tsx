@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
 import Login from "./Login";
 import RouterPage from "./RouterPage";
-import Me from "./Me";
 import Nav from "./Nav";
 import ChatScreen from "./screens/ChatScreen";
 import ChatList from "./ChatList";
@@ -14,7 +13,7 @@ import { useInitMessageCreatedSubscription } from "./hooks/graphql";
 import SignUp from "./SignUp";
 import { useMeQuery } from "graphql/types";
 import AuthScreen from "./screens/AuthScreen";
-import SettingsScreen from "./screens/SettingsScreen";
+import MeScreen from "./screens/MeScreen";
 
 export default () => {
   const { data, error } = useMeQuery();
@@ -32,18 +31,16 @@ export default () => {
             <Link to="/">chats</Link>
             <Link to="/users">users</Link>
             <Link to="/me">me</Link>
-            <Link to="/settings">settings</Link>
           </Nav>
 
           <MotionRouter>
             <RouterPage component={<ChatList />} path="/" />
             <ChatScreen path="/chats/:chatId" />
-            <RouterPage component={<SettingsScreen />} path="/settings" />
             <RouterPage component={<AuthScreen />} path="/auth" />
             <RouterPage component={<Login />} path="/login" />
             <RouterPage component={<SignUp />} path="/signup" />
             <RouterPage component={<UserList />} path="/users" />
-            <RouterPage component={<Me />} path="/me" />
+            <RouterPage component={<MeScreen />} path="/me" />
           </MotionRouter>
         </>)
         : <AuthScreen></AuthScreen>}

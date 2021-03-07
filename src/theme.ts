@@ -5,6 +5,9 @@ export const theme = {
     primary3: "hsl(340,77%,50%)",
     primary4: "hsl(344,71%,42%)",
     primary5: "hsl(348,75%,33%)",
+    primary6: "hsl(348,76%,25%)",
+
+
 
     text1: "hsl(170,15%,96%)",
     text2: "hsl(330,5%,32%)",

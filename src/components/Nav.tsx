@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 export default styled.nav`
   display: flex;
   min-height: 4vh;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
 
   ${({ theme }) =>

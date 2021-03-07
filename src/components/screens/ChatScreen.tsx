@@ -15,6 +15,7 @@ export default (props: RouteProps<Props>) => {
   const { data, loading } = useChatQuery({
     variables: { id: chatId },
   });
+  //const chat = data?.chat;
 
   useMessagesQuery();
   const { data: meData } = useMeQuery();

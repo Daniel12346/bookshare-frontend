@@ -6,6 +6,8 @@ import { Row } from "./styled/utils";
 import { useChatQuery } from "graphql/types";
 import { useMe } from "./hooks/me";
 import ChatOptions from "./ChatOptions";
+import StyledImage from "./StyledImage";
+import StyledCard from "./StyledCard";
 
 interface Props {
   chatId: string;
@@ -20,7 +22,7 @@ export default ({ chatId }: Props) => {
   if (error) return <span>{error.message}</span>;
   return (
     data?.chat ?
-      (<StyledChat key={chatId}>
+      (<StyledCard key={chatId}>
         <StyledImage
           onClick={() => navigate(`chats/${chatId}`)}
           src={otherUser?.profileImageUrl || ""}
@@ -43,6 +45,8 @@ export default ({ chatId }: Props) => {
                           <StyledImage
                             key={user.id}
                             src={user.profileImageUrl || ""}
+                            withBorder
+                            withShadow
                           />
                         </StyledChatUsersList>
                       )
@@ -53,40 +57,10 @@ export default ({ chatId }: Props) => {
           }
         </StyledChatInfo>
         <ChatOptions chat={data?.chat as Chat}></ChatOptions>
-      </StyledChat>) : null
+      </StyledCard>) : null
   );
 };
 
-const StyledChat = styled.li`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  width: 90%;
-  max-width: 40rem;
-  border-radius: 15px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  min-height: 5rem;
-  margin-bottom: 6vh;
-  cursor: pointer;
-  background: white;
-  > img {
-    flex: 0 0 auto;
-  }
-`;
-
-interface StyledImageProps {
-  large?: boolean;
-}
-
-const StyledImage = styled.img<StyledImageProps>`
-  height: ${({ large }) => (large ? "6rem" : "2.5rem")};
-  width: ${({ large }) => (large ? "6rem" : "2.5rem")};
-  display: block;
-  border-radius: 50%;
-  object-position: center;
-  object-fit: cover;
-  border: 5px white solid;
-`;
 const StyledChatInfo = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -97,6 +71,10 @@ const StyledChatInfo = styled.div`
 const StyledChatUsersList = styled.div`
   color: ${({ theme }) => theme.colors.text2};
   font-size: 0.9rem;
+  padding-left: 0.1rem;
+  >*{
+    margin: 0.3rem -0.24rem 0.3rem 0;
+  }
 `;
 
 const StyledChatName = styled.span`
