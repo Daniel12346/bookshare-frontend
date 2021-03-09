@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useCreateChatMutation, useMeQuery, useUsersQuery } from "graphql/types";
+import { useAddUserToChatMutation, useChatsQuery, useCreateChatMutation, useMeQuery, User, useUsersQuery } from "graphql/types";
 import { ME_QUERY } from "graphql/queries";
 import StyledImage from "./StyledImage";
 import StyledCard from "./StyledCard";
+import StyledDropdown from "./StyledDropdown";
+import Loader from "./Loader";
 
 export default () => {
   const { data: meData } = useMeQuery();
@@ -11,7 +13,7 @@ export default () => {
   const [createChat, { error: mutationError }] = useCreateChatMutation({ refetchQueries: [{ query: ME_QUERY }], onCompleted: (data) => { console.log("completed", data) } });
   return (
     <StyledContainer>
-      {loading && <span>Loading...</span>}
+      {loading && <Loader />}
       {//error && error.message
       }
       {mutationError && mutationError.message}
@@ -25,8 +27,8 @@ export default () => {
                   <span>{user.firstName + " " + user.lastName}</span>
                 </StyledUserInfo>
                 <StyledUserOptions>
-                  <button onClick={() => createChat({ variables: { userId: user.id } })}>chat</button>
-                  <button>Add to group</button>
+                  <span onClick={() => createChat({ variables: { userId: user.id } })}>chat</span>
+                  <AddToGroup userId={user.id}></AddToGroup>
                 </StyledUserOptions>
               </StyledCard>
             )
@@ -49,7 +51,7 @@ const StyledUserList = styled.ul`
   justify-content: center;
   margin-top: 1.5rem;
 
-  >*{margin-bottom: 0.2rem}
+  >*{margin-bottom: 0.5rem}
 `
 const StyledUserInfo = styled.div`
   display: flex;
@@ -77,3 +79,24 @@ span{
     cursor: pointer;
 }
 `;
+interface Props {
+  userId: string
+}
+const AddToGroup = ({ userId }: Props) => {
+  const [isListShown, setIsListShown] = useState(false);
+  const { data } = useMeQuery();
+  const [addUserToChat] = useAddUserToChatMutation();
+  const chats = data?.me?.chats;
+
+  const groupsWhereUserCanBeAdded = chats?.filter(chat => chat?.isGroup && chat.users.findIndex(user => user?.id === userId) === -1);
+  console.log(groupsWhereUserCanBeAdded);
+  return <StyledDropdown isListShown={isListShown}>
+    <span onClick={() => setIsListShown(prev => !prev)}>Add to chat</span>
+    <ul>{groupsWhereUserCanBeAdded?.map(chat => <li key={chat?.id} onClick={() => addUserToChat({ variables: { chatId: chat?.id, userId: userId } })}>
+      {chat?.name || chat?.id}
+    </li>)}
+      {groupsWhereUserCanBeAdded?.length === 0 && <li>No groups where user could be added found.</li>}
+    </ul>
+  </StyledDropdown>;
+};
+

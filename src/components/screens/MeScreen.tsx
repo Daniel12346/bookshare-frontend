@@ -5,8 +5,9 @@ import { ME_QUERY } from "graphql/queries";
 import { useUploadImageMutation } from "graphql/types";
 import React from "react";
 import StyledImage from "components/StyledImage";
+import Loader from "components/Loader";
 export default () => {
-    const [uploadImage, { error }] = useUploadImageMutation({ refetchQueries: [{ query: ME_QUERY }] });
+    const [uploadImage, { error, loading }] = useUploadImageMutation({ refetchQueries: [{ query: ME_QUERY }] });
     const { me } = useMe();
     return (
         <StyledContainer>
@@ -20,6 +21,7 @@ export default () => {
                     uploadImage({ variables: { file } });
                 }
             }}></input>
+            {loading && <Loader></Loader>}
         </StyledContainer>)
 }
 

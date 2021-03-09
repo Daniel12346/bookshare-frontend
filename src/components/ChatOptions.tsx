@@ -15,7 +15,7 @@ export default ({ chat }: Props) => {
                 <AddUserToChat chat={chat}></AddUserToChat>
                 <span> Leave</span>
             </>
-            : <span>User options</span>}
+            : <span>Delete chat</span>}
     </StyledChatOptions>)
 }
 

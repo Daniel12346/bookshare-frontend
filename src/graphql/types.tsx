@@ -293,7 +293,11 @@ export type MeQuery = (
     { __typename?: 'User' }
     & { chats: Array<Maybe<(
       { __typename?: 'Chat' }
-      & Pick<Chat, 'id'>
+      & Pick<Chat, 'id' | 'name' | 'isGroup'>
+      & { users: Array<Maybe<(
+        { __typename?: 'User' }
+        & UserDetailsFragment
+      )>> }
     )>> }
     & UserDetailsFragment
   )> }
@@ -614,6 +618,11 @@ export const MeDocument = gql`
   me {
     chats {
       id
+      name
+      isGroup @client
+      users {
+        ...UserDetails
+      }
     }
     ...UserDetails
   }

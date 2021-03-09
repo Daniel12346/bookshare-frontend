@@ -15,6 +15,11 @@ export const ME_QUERY = gql`
     me {
       chats{
         id
+        name      
+        isGroup @client
+        users{
+          ...UserDetails
+        }
       }      
       ...UserDetails
     }
@@ -22,6 +27,7 @@ export const ME_QUERY = gql`
   ${UserDetails}
 `;
 
+//TODO: fix (relations)
 export const CHATS_QUERY = gql`
   query chats {
     chats {

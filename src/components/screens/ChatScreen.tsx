@@ -1,9 +1,9 @@
-//import { useChatsQuery } from "graphql/types";
 import React from "react";
 import { RouteProps } from "typings";
 import { useChatQuery, useMessagesQuery, useMeQuery, User } from "graphql/types";
 import MessageInput from "components/MessageInput";
 import styled from "styled-components";
+import Loader from "components/Loader";
 
 interface Props {
   chatId?: string;
@@ -20,8 +20,7 @@ export default (props: RouteProps<Props>) => {
   useMessagesQuery();
   const { data: meData } = useMeQuery();
 
-  //TODO: loader
-  if (loading) return <span>Loading...</span>;
+  if (loading) return <Loader></Loader>;
   return (
     <StyledContainer>
       <StyledMessageList>

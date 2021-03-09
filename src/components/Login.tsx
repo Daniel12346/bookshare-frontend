@@ -7,13 +7,13 @@ export default () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [logIn, { error }] = useLogInMutation({
+  const [logIn, { error, loading }] = useLogInMutation({
     update: (cache, res) => {
       const token = res.data?.logIn;
       if (token) {
         token && localStorage.setItem("token", token);
         //TODO: skužit zošto ovo rodi   (je ovo rodi???)
-        cache.writeQuery<any, any>({ query: ME_QUERY, data: (meData: any) => { console.log("ME!!!!: ", meData) } });
+        cache.writeQuery<any, any>({ query: ME_QUERY, data: (meData: any) => { console.log(meData) } });
       }
     }, onCompleted: () => { navigate("/") }
   });
@@ -58,6 +58,7 @@ export default () => {
       setEmail("");
     }}>
       <span>{error?.message}</span>
+      {loading && <span>Loading...</span>}
       <label>
         Email
         <input
