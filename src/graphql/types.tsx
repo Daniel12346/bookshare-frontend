@@ -58,6 +58,7 @@ export type Mutation = {
   createUser: User;
   deleteUser?: Maybe<MutationResult>;
   addUserToChat?: Maybe<Chat>;
+  removeUserFromChat?: Maybe<Chat>;
   logIn?: Maybe<Scalars['String']>;
   createMessage?: Maybe<Message>;
   createChat?: Maybe<Chat>;
@@ -82,6 +83,12 @@ export type MutationDeleteUserArgs = {
 
 
 export type MutationAddUserToChatArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  chatId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationRemoveUserFromChatArgs = {
   userId?: Maybe<Scalars['ID']>;
   chatId?: Maybe<Scalars['ID']>;
 };
@@ -269,7 +276,29 @@ export type AddUserToChatMutation = (
   { __typename?: 'Mutation' }
   & { addUserToChat?: Maybe<(
     { __typename?: 'Chat' }
-    & ChatDetailsFragment
+    & Pick<Chat, 'id' | 'name' | 'createdAt'>
+    & { users: Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id'>
+    )>> }
+  )> }
+);
+
+export type RemoveUserFromChatMutationVariables = Exact<{
+  userId?: Maybe<Scalars['ID']>;
+  chatId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type RemoveUserFromChatMutation = (
+  { __typename?: 'Mutation' }
+  & { removeUserFromChat?: Maybe<(
+    { __typename?: 'Chat' }
+    & Pick<Chat, 'id' | 'name' | 'createdAt'>
+    & { users: Array<Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id'>
+    )>> }
   )> }
 );
 
@@ -551,10 +580,15 @@ export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageM
 export const AddUserToChatDocument = gql`
     mutation addUserToChat($userId: ID, $chatId: ID) {
   addUserToChat(userId: $userId, chatId: $chatId) {
-    ...ChatDetails
+    id
+    name
+    createdAt
+    users {
+      id
+    }
   }
 }
-    ${ChatDetailsFragmentDoc}`;
+    `;
 export type AddUserToChatMutationFn = Apollo.MutationFunction<AddUserToChatMutation, AddUserToChatMutationVariables>;
 
 /**
@@ -581,6 +615,44 @@ export function useAddUserToChatMutation(baseOptions?: ApolloReactHooks.Mutation
 export type AddUserToChatMutationHookResult = ReturnType<typeof useAddUserToChatMutation>;
 export type AddUserToChatMutationResult = Apollo.MutationResult<AddUserToChatMutation>;
 export type AddUserToChatMutationOptions = Apollo.BaseMutationOptions<AddUserToChatMutation, AddUserToChatMutationVariables>;
+export const RemoveUserFromChatDocument = gql`
+    mutation removeUserFromChat($userId: ID, $chatId: ID) {
+  removeUserFromChat(userId: $userId, chatId: $chatId) {
+    id
+    name
+    createdAt
+    users {
+      id
+    }
+  }
+}
+    `;
+export type RemoveUserFromChatMutationFn = Apollo.MutationFunction<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>;
+
+/**
+ * __useRemoveUserFromChatMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromChatMutation, { data, loading, error }] = useRemoveUserFromChatMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      chatId: // value for 'chatId'
+ *   },
+ * });
+ */
+export function useRemoveUserFromChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>) {
+        return ApolloReactHooks.useMutation<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>(RemoveUserFromChatDocument, baseOptions);
+      }
+export type RemoveUserFromChatMutationHookResult = ReturnType<typeof useRemoveUserFromChatMutation>;
+export type RemoveUserFromChatMutationResult = Apollo.MutationResult<RemoveUserFromChatMutation>;
+export type RemoveUserFromChatMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>;
 export const UsersDocument = gql`
     query users {
   users {

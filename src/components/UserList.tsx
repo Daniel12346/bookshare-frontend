@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAddUserToChatMutation, useChatsQuery, useCreateChatMutation, useMeQuery, User, useUsersQuery } from "graphql/types";
+import { useAddUserToChatMutation, useCreateChatMutation, useMeQuery, useUsersQuery } from "graphql/types";
 import { ME_QUERY } from "graphql/queries";
 import StyledImage from "./StyledImage";
 import StyledCard from "./StyledCard";
@@ -27,7 +27,7 @@ export default () => {
                   <span>{user.firstName + " " + user.lastName}</span>
                 </StyledUserInfo>
                 <StyledUserOptions>
-                  <span onClick={() => createChat({ variables: { userId: user.id } })}>chat</span>
+                  <span onClick={() => createChat({ variables: { userId: user.id } })}>Create chat</span>
                   <AddToGroup userId={user.id}></AddToGroup>
                 </StyledUserOptions>
               </StyledCard>
@@ -89,9 +89,8 @@ const AddToGroup = ({ userId }: Props) => {
   const chats = data?.me?.chats;
 
   const groupsWhereUserCanBeAdded = chats?.filter(chat => chat?.isGroup && chat.users.findIndex(user => user?.id === userId) === -1);
-  console.log(groupsWhereUserCanBeAdded);
   return <StyledDropdown isListShown={isListShown}>
-    <span onClick={() => setIsListShown(prev => !prev)}>Add to chat</span>
+    <span onClick={() => setIsListShown(prev => !prev)}>Add to group</span>
     <ul>{groupsWhereUserCanBeAdded?.map(chat => <li key={chat?.id} onClick={() => addUserToChat({ variables: { chatId: chat?.id, userId: userId } })}>
       {chat?.name || chat?.id}
     </li>)}

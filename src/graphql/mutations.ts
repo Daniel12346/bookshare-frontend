@@ -64,8 +64,25 @@ export const UPLOAD_IMAGE_MUTATION = gql`
 export const ADD_USER_TO_CHAT_MUTATION = gql`
   mutation addUserToChat($userId: ID, $chatId: ID){
     addUserToChat(userId: $userId, chatId: $chatId){
-      ...ChatDetails
+    id
+    name
+    createdAt
+    users {
+       id
+    }
     }
   }
-  ${ChatDetails}
+`
+export const REMOVE_USER_FROM_CHAT = gql`
+  mutation removeUserFromChat($userId: ID, $chatId: ID){
+    removeUserFromChat(userId: $userId, chatId: $chatId){
+     id
+      name
+      createdAt
+      users {
+       id
+      }
+     
+    }
+  }
 `

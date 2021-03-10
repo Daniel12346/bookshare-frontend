@@ -4,13 +4,14 @@ import Chat from "./Chat";
 //the interface is imported as IChat to name clashes with the Chat component
 import { useMeQuery } from "graphql/types";
 import styled from "styled-components";
+import Loader from "./Loader";
 
 export default () => {
   const { data, loading, error } = useMeQuery();
 
   return (
     <StyledContainer>
-      {loading && <span>Loading...</span>}
+      {loading && <Loader></Loader>}
       {error?.message}
       <StyledChatList>
         {data?.me?.chats.map(

@@ -2,6 +2,7 @@ import { navigate } from "@reach/router";
 import { ME_QUERY } from "graphql/queries";
 import { useLogInMutation } from "graphql/types";
 import React, { useState } from "react";
+import Loader from "./Loader";
 
 export default () => {
   const [email, setEmail] = useState("");
@@ -58,7 +59,7 @@ export default () => {
       setEmail("");
     }}>
       <span>{error?.message}</span>
-      {loading && <span>Loading...</span>}
+      {loading && <Loader></Loader>}
       <label>
         Email
         <input
