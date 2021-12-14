@@ -1,10 +1,11 @@
 import Login from "components/Login";
 import SignUp from "components/SignUp";
 import React, { useState } from "react";
+import styled from "styled-components";
 
 export default () => {
     const [isRegistered, setIsRegistered] = useState(true);
-    return (<div >{
+    return (<StyledAuthContainer >{
         isRegistered ?
             <div>
                 <Login />
@@ -16,5 +17,18 @@ export default () => {
                 <span onClick={() => setIsRegistered(prev => !prev)}>Already have an account? Log in</span>
             </div>
     }
-    </div >)
+    </StyledAuthContainer>)
 }
+
+const StyledAuthContainer = styled.div`
+    display: flex;
+    height: 100vh;
+    flex-flow: row wrap;
+    justify-content: center;
+    background: ${({ theme }) => theme.colors.primary1};
+    span{
+        display: flex;
+        background: ${({ theme }) => theme.colors.primary2};
+        padding: 1rem;
+    }
+`

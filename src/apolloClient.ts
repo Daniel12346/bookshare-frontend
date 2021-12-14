@@ -53,7 +53,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const httpLink = createUploadLink({
   //uri: "http://127.0.0.1:4000/graphql",
-  uri: "https://chat-server1234.herokuapp.com/graphql",
+  uri: "https://bookshare-backend1234.herokuapp.com/graphql",
   credentials: "include",
 });
 

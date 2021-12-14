@@ -2,6 +2,8 @@ import { navigate } from "@reach/router";
 import { ME_QUERY } from "graphql/queries";
 import { useLogInMutation } from "graphql/types";
 import React, { useState } from "react";
+import styled from "styled-components";
+import { theme } from "theme";
 import Loader from "./Loader";
 
 export default () => {
@@ -13,7 +15,6 @@ export default () => {
       const token = res.data?.logIn;
       if (token) {
         token && localStorage.setItem("token", token);
-        //TODO: skužit zošto ovo rodi   (je ovo rodi???)
         cache.writeQuery<any, any>({ query: ME_QUERY, data: (meData: any) => { console.log(meData) } });
       }
     }, onCompleted: () => { navigate("/") }
@@ -52,13 +53,13 @@ export default () => {
   //   }
   // };
   return (
-    <form onSubmit={(e) => {
+    <StyledForm onSubmit={(e) => {
       e.preventDefault()
       logIn({ variables: { password, email } });
       setPassword("");
       setEmail("");
     }}>
-      <span>{error?.message}</span>
+      {error && <span>{error.message}</span>}
       {loading && <Loader></Loader>}
       <label>
         Email
@@ -76,7 +77,41 @@ export default () => {
           onChange={e => setPassword((e.target as HTMLInputElement).value)}
         />
       </label>
-      <button>logIn</button>
-    </form>
+      <StyledButton>logIn</StyledButton>
+    </StyledForm>
   );
 };
+
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 30rem;
+  min-height: 12rem;
+  justify-content: space-between;
+  padding: 1rem;
+  background: ${({ theme }) => theme.colors.primary2};
+  label{
+    display: flex;
+   flex-flow: column nowrap;
+   color: hsl(330, 88%, 903%);
+  }
+  input{
+    background: ${({ theme }) => theme.colors.accent1};
+    padding: 0 0.6rem; 
+    width: 100%;
+    border-radius: 3px;
+    align-self: center;
+    min-height: 1.4rem;
+  }
+  button{
+    margin-top: 2rem;
+    background: hsl(30, 78%, 75%);
+  }
+`
+
+const StyledButton = styled.button`
+cursor: pointer;
+background: white;
+padding: 0.3rem;
+`
