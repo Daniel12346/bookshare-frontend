@@ -13,15 +13,16 @@ export const USERS_QUERY = gql`
 export const ME_QUERY = gql`
   query me {
     me {
-      chats{
-        id
-        name      
-        isGroup @client
-        users{
-          ...UserDetails
-        }
-      }      
+      # chats{
+      #   id
+      #   name      
+      #   isGroup @client
+      #   # users{
+      #   #   ...UserDetails
+      #   # }
       ...UserDetails
+
+       
     }
   }
   ${UserDetails}

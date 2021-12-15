@@ -1,15 +1,18 @@
 export const theme = {
   colors: {
-    primary1: "hsl(335,75%,73%)",
-    primary2: "hsl(337,76%,62%)",
-    primary3: "hsl(340,77%,50%)",
-    primary4: "hsl(344,71%,42%)",
+    primary1: "#E9E0CB",
+    primary2: "#99826B",
+    primary3: "#55403C",
+
+    //TODO:
+    primary4: "#503722",
     primary5: "hsl(348,75%,33%)",
     primary6: "hsl(348,76%,25%)",
 
     accent1: "hsl(50, 75%, 96%)",
     accent2: "",
     accent3: "",
+    background: "#FFFFFF",
 
 
     text1: "hsl(170,15%,96%)",

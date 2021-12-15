@@ -7,9 +7,15 @@ export default createGlobalStyle`
     margin: 0;
     border: none;
     /*TODO: font*/
-    font-family: sans-serif;
+    font-family: "serif";
     overflow-x: hidden
 }
+
+button{
+    font-family: "sans-serif";
+
+}
+
 body{
     background: ${({ theme }) => theme.colors.background1}
 }

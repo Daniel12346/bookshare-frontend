@@ -3,11 +3,11 @@ import { Router, Link } from "@reach/router";
 import { Location } from "@reach/router";
 import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
-import Login from "./Login";
+import Login from "./Auth";
 import RouterPage from "./RouterPage";
 import Nav from "./Nav";
 import ChatScreen from "./screens/ChatScreen";
-import ChatList from "./ChatList";
+// import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
 import { useInitMessageCreatedSubscription } from "./hooks/graphql";
 import SignUp from "./SignUp";
@@ -37,8 +37,8 @@ export default () => {
           </Nav>
 
           <MotionRouter>
-            <RouterPage component={<ChatList />} path="/" />
-            <ChatScreen path="/chats/:chatId" />
+            {/* <RouterPage component={<ChatList />} path="/" /> */}
+            {/* <ChatScreen path="/chats/:chatId" /> */}
             <RouterPage component={<AuthScreen />} path="/auth" />
             <RouterPage component={<Login />} path="/login" />
             <RouterPage component={<SignUp />} path="/signup" />

@@ -320,14 +320,6 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & { chats: Array<Maybe<(
-      { __typename?: 'Chat' }
-      & Pick<Chat, 'id' | 'name' | 'isGroup'>
-      & { users: Array<Maybe<(
-        { __typename?: 'User' }
-        & UserDetailsFragment
-      )>> }
-    )>> }
     & UserDetailsFragment
   )> }
 );
@@ -688,14 +680,6 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const MeDocument = gql`
     query me {
   me {
-    chats {
-      id
-      name
-      isGroup @client
-      users {
-        ...UserDetails
-      }
-    }
     ...UserDetails
   }
 }

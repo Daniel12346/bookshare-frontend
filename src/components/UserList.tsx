@@ -26,10 +26,10 @@ export default () => {
                   <StyledImage src={user.profileImageUrl || ""}></StyledImage>
                   <span>{user.firstName + " " + user.lastName}</span>
                 </StyledUserInfo>
-                <StyledUserOptions>
+                {/* <StyledUserOptions>
                   <span onClick={() => createChat({ variables: { userId: user.id } })}>Create chat</span>
                   <AddToGroup userId={user.id}></AddToGroup>
-                </StyledUserOptions>
+                </StyledUserOptions> */}
               </StyledCard>
             )
         )}
@@ -47,6 +47,7 @@ const StyledUserList = styled.ul`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
+
   align-items: center;
   justify-content: center;
   margin-top: 1.5rem;
@@ -82,20 +83,20 @@ span{
 interface Props {
   userId: string
 }
-const AddToGroup = ({ userId }: Props) => {
-  const [isListShown, setIsListShown] = useState(false);
-  const { data } = useMeQuery();
-  const [addUserToChat] = useAddUserToChatMutation();
-  const chats = data?.me?.chats;
+// const AddToGroup = ({ userId }: Props) => {
+//   const [isListShown, setIsListShown] = useState(false);
+//   const { data } = useMeQuery();
+//   const [addUserToChat] = useAddUserToChatMutation();
+//   const chats = data?.me?.chats;
 
-  const groupsWhereUserCanBeAdded = chats?.filter(chat => chat?.isGroup && chat.users.findIndex(user => user?.id === userId) === -1);
-  return <StyledDropdown isListShown={isListShown}>
-    <span onClick={() => setIsListShown(prev => !prev)}>Add to group</span>
-    <ul>{groupsWhereUserCanBeAdded?.map(chat => <li key={chat?.id} onClick={() => addUserToChat({ variables: { chatId: chat?.id, userId: userId } })}>
-      {chat?.name || chat?.id}
-    </li>)}
-      {groupsWhereUserCanBeAdded?.length === 0 && <li>No groups where user could be added found.</li>}
-    </ul>
-  </StyledDropdown>;
-};
+//   const groupsWhereUserCanBeAdded = chats?.filter(chat => chat?.isGroup && chat.users.findIndex(user => user?.id === userId) === -1);
+//   return <StyledDropdown isListShown={isListShown}>
+//     <span onClick={() => setIsListShown(prev => !prev)}>Add to group</span>
+//     <ul>{groupsWhereUserCanBeAdded?.map(chat => <li key={chat?.id} onClick={() => addUserToChat({ variables: { chatId: chat?.id, userId: userId } })}>
+//       {chat?.name || chat?.id}
+//     </li>)}
+//       {groupsWhereUserCanBeAdded?.length === 0 && <li>No groups where user could be added found.</li>}
+//     </ul>
+//   </StyledDropdown>;
+// };
 

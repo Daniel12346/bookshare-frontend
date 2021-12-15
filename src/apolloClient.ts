@@ -58,7 +58,7 @@ const httpLink = createUploadLink({
 });
 
 const wsLink = new WebSocketLink({
-  uri: "wss://chat-server1234.herokuapp.com/graphql",
+  uri: "wss://bookshare-backend1234.herokuapp.com/graphql",
   options: {
     reconnect: true,
     connectionParams: { authToken: localStorage.getItem("token") || null },
