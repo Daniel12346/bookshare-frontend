@@ -15,6 +15,17 @@ export type Scalars = {
   Upload: any;
 };
 
+export type Book = {
+  __typename?: 'Book';
+  id: Scalars['ID'];
+  author: Scalars['String'];
+  name: Scalars['String'];
+  year?: Maybe<Scalars['Int']>;
+  ownedBy: Array<Maybe<User>>;
+  wantedBy: Array<Maybe<User>>;
+  coverUrl: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -22,20 +33,10 @@ export type User = {
   lastName: Scalars['String'];
   email: Scalars['String'];
   profileImageUrl?: Maybe<Scalars['String']>;
-  chats: Array<Maybe<Chat>>;
-  messages: Array<Maybe<Message>>;
+  owned: Array<Maybe<Book>>;
+  wanted: Array<Maybe<Book>>;
 };
 
-
-export type Chat = {
-  __typename?: 'Chat';
-  createdAt: Scalars['Date'];
-  id: Scalars['ID'];
-  isGroup: Scalars['Boolean'];
-  messages: Array<Maybe<Message>>;
-  name?: Maybe<Scalars['String']>;
-  users: Array<Maybe<User>>;
-};
 
 
 export type MutationResult = {
@@ -57,15 +58,12 @@ export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
   deleteUser?: Maybe<MutationResult>;
-  addUserToChat?: Maybe<Chat>;
-  removeUserFromChat?: Maybe<Chat>;
+  createBook?: Maybe<Book>;
+  deleteBook?: Maybe<MutationResult>;
+  addBookToOwned?: Maybe<MutationResult>;
+  addBookToWanted?: Maybe<MutationResult>;
   logIn?: Maybe<Scalars['String']>;
-  createMessage?: Maybe<Message>;
-  createChat?: Maybe<Chat>;
-  deleteMessage?: Maybe<MutationResult>;
-  deleteChat?: Maybe<MutationResult>;
   uploadImage?: Maybe<MutationResult>;
-  uploadChatImage?: Maybe<MutationResult>;
 };
 
 
@@ -82,15 +80,28 @@ export type MutationDeleteUserArgs = {
 };
 
 
-export type MutationAddUserToChatArgs = {
-  userId?: Maybe<Scalars['ID']>;
-  chatId?: Maybe<Scalars['ID']>;
+export type MutationCreateBookArgs = {
+  name?: Maybe<Scalars['String']>;
+  author?: Maybe<Scalars['String']>;
+  year?: Maybe<Scalars['Int']>;
+  coverUrl?: Maybe<Scalars['String']>;
 };
 
 
-export type MutationRemoveUserFromChatArgs = {
+export type MutationDeleteBookArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationAddBookToOwnedArgs = {
   userId?: Maybe<Scalars['ID']>;
-  chatId?: Maybe<Scalars['ID']>;
+  bookId?: Maybe<Scalars['ID']>;
+};
+
+
+export type MutationAddBookToWantedArgs = {
+  userId?: Maybe<Scalars['ID']>;
+  bookId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -100,45 +111,22 @@ export type MutationLogInArgs = {
 };
 
 
-export type MutationCreateMessageArgs = {
-  chatId?: Maybe<Scalars['ID']>;
-  content?: Maybe<Scalars['String']>;
-};
-
-
-export type MutationCreateChatArgs = {
-  userId?: Maybe<Scalars['ID']>;
-};
-
-
-export type MutationDeleteMessageArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-
-export type MutationDeleteChatArgs = {
-  id?: Maybe<Scalars['ID']>;
-};
-
-
 export type MutationUploadImageArgs = {
-  file?: Maybe<Scalars['Upload']>;
-};
-
-
-export type MutationUploadChatImageArgs = {
-  chatId?: Maybe<Scalars['ID']>;
   file?: Maybe<Scalars['Upload']>;
 };
 
 export type Query = {
   __typename?: 'Query';
   users: Array<Maybe<User>>;
+  books: Array<Maybe<Book>>;
+  book?: Maybe<Book>;
   user?: Maybe<User>;
   me?: Maybe<User>;
-  messages: Array<Maybe<Message>>;
-  chats: Array<Maybe<Chat>>;
-  chat?: Maybe<Chat>;
+};
+
+
+export type QueryBookArgs = {
+  id?: Maybe<Scalars['String']>;
 };
 
 
@@ -146,57 +134,19 @@ export type QueryUserArgs = {
   id?: Maybe<Scalars['String']>;
 };
 
-
-export type QueryChatArgs = {
-  id?: Maybe<Scalars['String']>;
-};
-
-export type Message = {
-  __typename?: 'Message';
-  id: Scalars['ID'];
-  content: Scalars['String'];
-  from: User;
-  chat: Chat;
-  createdAt: Scalars['Date'];
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  messageCreated: Message;
-};
-
 export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE'
 }
 
+export type Chat = {
+  __typename?: 'Chat';
+  isGroup: Scalars['Boolean'];
+};
+
 export type UserDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, 'firstName' | 'lastName' | 'id' | 'profileImageUrl'>
-);
-
-export type MessageDetailsFragment = (
-  { __typename?: 'Message' }
-  & Pick<Message, 'id' | 'content' | 'createdAt'>
-  & { from: (
-    { __typename?: 'User' }
-    & UserDetailsFragment
-  ), chat: (
-    { __typename?: 'Chat' }
-    & Pick<Chat, 'id'>
-  ) }
-);
-
-export type ChatDetailsFragment = (
-  { __typename?: 'Chat' }
-  & Pick<Chat, 'id' | 'name' | 'createdAt' | 'isGroup'>
-  & { messages: Array<Maybe<(
-    { __typename?: 'Message' }
-    & MessageDetailsFragment
-  )>>, users: Array<Maybe<(
-    { __typename?: 'User' }
-    & UserDetailsFragment
-  )>> }
 );
 
 export type LogInMutationVariables = Exact<{
@@ -226,33 +176,6 @@ export type SignUpMutation = (
   ) }
 );
 
-export type CreateMessageMutationVariables = Exact<{
-  chatId?: Maybe<Scalars['ID']>;
-  content?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateMessageMutation = (
-  { __typename?: 'Mutation' }
-  & { createMessage?: Maybe<(
-    { __typename?: 'Message' }
-    & MessageDetailsFragment
-  )> }
-);
-
-export type CreateChatMutationVariables = Exact<{
-  userId?: Maybe<Scalars['ID']>;
-}>;
-
-
-export type CreateChatMutation = (
-  { __typename?: 'Mutation' }
-  & { createChat?: Maybe<(
-    { __typename?: 'Chat' }
-    & ChatDetailsFragment
-  )> }
-);
-
 export type UploadImageMutationVariables = Exact<{
   file?: Maybe<Scalars['Upload']>;
 }>;
@@ -263,42 +186,6 @@ export type UploadImageMutation = (
   & { uploadImage?: Maybe<(
     { __typename?: 'MutationResult' }
     & Pick<MutationResult, 'success'>
-  )> }
-);
-
-export type AddUserToChatMutationVariables = Exact<{
-  userId?: Maybe<Scalars['ID']>;
-  chatId?: Maybe<Scalars['ID']>;
-}>;
-
-
-export type AddUserToChatMutation = (
-  { __typename?: 'Mutation' }
-  & { addUserToChat?: Maybe<(
-    { __typename?: 'Chat' }
-    & Pick<Chat, 'id' | 'name' | 'createdAt'>
-    & { users: Array<Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id'>
-    )>> }
-  )> }
-);
-
-export type RemoveUserFromChatMutationVariables = Exact<{
-  userId?: Maybe<Scalars['ID']>;
-  chatId?: Maybe<Scalars['ID']>;
-}>;
-
-
-export type RemoveUserFromChatMutation = (
-  { __typename?: 'Mutation' }
-  & { removeUserFromChat?: Maybe<(
-    { __typename?: 'Chat' }
-    & Pick<Chat, 'id' | 'name' | 'createdAt'>
-    & { users: Array<Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id'>
-    )>> }
   )> }
 );
 
@@ -324,52 +211,6 @@ export type MeQuery = (
   )> }
 );
 
-export type ChatsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ChatsQuery = (
-  { __typename?: 'Query' }
-  & { chats: Array<Maybe<(
-    { __typename?: 'Chat' }
-    & ChatDetailsFragment
-  )>> }
-);
-
-export type ChatQueryVariables = Exact<{
-  id?: Maybe<Scalars['String']>;
-}>;
-
-
-export type ChatQuery = (
-  { __typename?: 'Query' }
-  & { chat?: Maybe<(
-    { __typename?: 'Chat' }
-    & ChatDetailsFragment
-  )> }
-);
-
-export type MessagesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MessagesQuery = (
-  { __typename?: 'Query' }
-  & { messages: Array<Maybe<(
-    { __typename?: 'Message' }
-    & MessageDetailsFragment
-  )>> }
-);
-
-export type MessageCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MessageCreatedSubscription = (
-  { __typename?: 'Subscription' }
-  & { messageCreated: (
-    { __typename?: 'Message' }
-    & MessageDetailsFragment
-  ) }
-);
-
 export const UserDetailsFragmentDoc = gql`
     fragment UserDetails on User {
   firstName
@@ -378,34 +219,6 @@ export const UserDetailsFragmentDoc = gql`
   profileImageUrl
 }
     `;
-export const MessageDetailsFragmentDoc = gql`
-    fragment MessageDetails on Message {
-  id
-  from {
-    ...UserDetails
-  }
-  content
-  createdAt
-  chat {
-    id
-  }
-}
-    ${UserDetailsFragmentDoc}`;
-export const ChatDetailsFragmentDoc = gql`
-    fragment ChatDetails on Chat {
-  id
-  name
-  messages {
-    ...MessageDetails
-  }
-  createdAt
-  users {
-    ...UserDetails
-  }
-  isGroup @client
-}
-    ${MessageDetailsFragmentDoc}
-${UserDetailsFragmentDoc}`;
 export const LogInDocument = gql`
     mutation logIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password)
@@ -472,71 +285,6 @@ export function useSignUpMutation(baseOptions?: ApolloReactHooks.MutationHookOpt
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
-export const CreateMessageDocument = gql`
-    mutation createMessage($chatId: ID, $content: String) {
-  createMessage(chatId: $chatId, content: $content) {
-    ...MessageDetails
-  }
-}
-    ${MessageDetailsFragmentDoc}`;
-export type CreateMessageMutationFn = Apollo.MutationFunction<CreateMessageMutation, CreateMessageMutationVariables>;
-
-/**
- * __useCreateMessageMutation__
- *
- * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createMessageMutation, { data, loading, error }] = useCreateMessageMutation({
- *   variables: {
- *      chatId: // value for 'chatId'
- *      content: // value for 'content'
- *   },
- * });
- */
-export function useCreateMessageMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMessageMutation, CreateMessageMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument, baseOptions);
-      }
-export type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
-export type CreateMessageMutationResult = Apollo.MutationResult<CreateMessageMutation>;
-export type CreateMessageMutationOptions = Apollo.BaseMutationOptions<CreateMessageMutation, CreateMessageMutationVariables>;
-export const CreateChatDocument = gql`
-    mutation createChat($userId: ID) {
-  createChat(userId: $userId) {
-    ...ChatDetails
-  }
-}
-    ${ChatDetailsFragmentDoc}`;
-export type CreateChatMutationFn = Apollo.MutationFunction<CreateChatMutation, CreateChatMutationVariables>;
-
-/**
- * __useCreateChatMutation__
- *
- * To run a mutation, you first call `useCreateChatMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateChatMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createChatMutation, { data, loading, error }] = useCreateChatMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useCreateChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateChatMutation, CreateChatMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateChatMutation, CreateChatMutationVariables>(CreateChatDocument, baseOptions);
-      }
-export type CreateChatMutationHookResult = ReturnType<typeof useCreateChatMutation>;
-export type CreateChatMutationResult = Apollo.MutationResult<CreateChatMutation>;
-export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMutation, CreateChatMutationVariables>;
 export const UploadImageDocument = gql`
     mutation uploadImage($file: Upload) {
   uploadImage(file: $file) {
@@ -569,82 +317,6 @@ export function useUploadImageMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
-export const AddUserToChatDocument = gql`
-    mutation addUserToChat($userId: ID, $chatId: ID) {
-  addUserToChat(userId: $userId, chatId: $chatId) {
-    id
-    name
-    createdAt
-    users {
-      id
-    }
-  }
-}
-    `;
-export type AddUserToChatMutationFn = Apollo.MutationFunction<AddUserToChatMutation, AddUserToChatMutationVariables>;
-
-/**
- * __useAddUserToChatMutation__
- *
- * To run a mutation, you first call `useAddUserToChatMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddUserToChatMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addUserToChatMutation, { data, loading, error }] = useAddUserToChatMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      chatId: // value for 'chatId'
- *   },
- * });
- */
-export function useAddUserToChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddUserToChatMutation, AddUserToChatMutationVariables>) {
-        return ApolloReactHooks.useMutation<AddUserToChatMutation, AddUserToChatMutationVariables>(AddUserToChatDocument, baseOptions);
-      }
-export type AddUserToChatMutationHookResult = ReturnType<typeof useAddUserToChatMutation>;
-export type AddUserToChatMutationResult = Apollo.MutationResult<AddUserToChatMutation>;
-export type AddUserToChatMutationOptions = Apollo.BaseMutationOptions<AddUserToChatMutation, AddUserToChatMutationVariables>;
-export const RemoveUserFromChatDocument = gql`
-    mutation removeUserFromChat($userId: ID, $chatId: ID) {
-  removeUserFromChat(userId: $userId, chatId: $chatId) {
-    id
-    name
-    createdAt
-    users {
-      id
-    }
-  }
-}
-    `;
-export type RemoveUserFromChatMutationFn = Apollo.MutationFunction<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>;
-
-/**
- * __useRemoveUserFromChatMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromChatMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromChatMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserFromChatMutation, { data, loading, error }] = useRemoveUserFromChatMutation({
- *   variables: {
- *      userId: // value for 'userId'
- *      chatId: // value for 'chatId'
- *   },
- * });
- */
-export function useRemoveUserFromChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>) {
-        return ApolloReactHooks.useMutation<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>(RemoveUserFromChatDocument, baseOptions);
-      }
-export type RemoveUserFromChatMutationHookResult = ReturnType<typeof useRemoveUserFromChatMutation>;
-export type RemoveUserFromChatMutationResult = Apollo.MutationResult<RemoveUserFromChatMutation>;
-export type RemoveUserFromChatMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromChatMutation, RemoveUserFromChatMutationVariables>;
 export const UsersDocument = gql`
     query users {
   users {
@@ -709,128 +381,3 @@ export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptio
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const ChatsDocument = gql`
-    query chats {
-  chats {
-    ...ChatDetails
-  }
-}
-    ${ChatDetailsFragmentDoc}`;
-
-/**
- * __useChatsQuery__
- *
- * To run a query within a React component, call `useChatsQuery` and pass it any options that fit your needs.
- * When your component renders, `useChatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChatsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useChatsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChatsQuery, ChatsQueryVariables>) {
-        return ApolloReactHooks.useQuery<ChatsQuery, ChatsQueryVariables>(ChatsDocument, baseOptions);
-      }
-export function useChatsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChatsQuery, ChatsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ChatsQuery, ChatsQueryVariables>(ChatsDocument, baseOptions);
-        }
-export type ChatsQueryHookResult = ReturnType<typeof useChatsQuery>;
-export type ChatsLazyQueryHookResult = ReturnType<typeof useChatsLazyQuery>;
-export type ChatsQueryResult = Apollo.QueryResult<ChatsQuery, ChatsQueryVariables>;
-export const ChatDocument = gql`
-    query chat($id: String) {
-  chat(id: $id) {
-    ...ChatDetails
-  }
-}
-    ${ChatDetailsFragmentDoc}`;
-
-/**
- * __useChatQuery__
- *
- * To run a query within a React component, call `useChatQuery` and pass it any options that fit your needs.
- * When your component renders, `useChatQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChatQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useChatQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ChatQuery, ChatQueryVariables>) {
-        return ApolloReactHooks.useQuery<ChatQuery, ChatQueryVariables>(ChatDocument, baseOptions);
-      }
-export function useChatLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ChatQuery, ChatQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ChatQuery, ChatQueryVariables>(ChatDocument, baseOptions);
-        }
-export type ChatQueryHookResult = ReturnType<typeof useChatQuery>;
-export type ChatLazyQueryHookResult = ReturnType<typeof useChatLazyQuery>;
-export type ChatQueryResult = Apollo.QueryResult<ChatQuery, ChatQueryVariables>;
-export const MessagesDocument = gql`
-    query messages {
-  messages {
-    ...MessageDetails
-  }
-}
-    ${MessageDetailsFragmentDoc}`;
-
-/**
- * __useMessagesQuery__
- *
- * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMessagesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
-        return ApolloReactHooks.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
-      }
-export function useMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
-        }
-export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
-export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
-export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
-export const MessageCreatedDocument = gql`
-    subscription messageCreated {
-  messageCreated {
-    ...MessageDetails
-  }
-}
-    ${MessageDetailsFragmentDoc}`;
-
-/**
- * __useMessageCreatedSubscription__
- *
- * To run a query within a React component, call `useMessageCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useMessageCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMessageCreatedSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useMessageCreatedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<MessageCreatedSubscription, MessageCreatedSubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<MessageCreatedSubscription, MessageCreatedSubscriptionVariables>(MessageCreatedDocument, baseOptions);
-      }
-export type MessageCreatedSubscriptionHookResult = ReturnType<typeof useMessageCreatedSubscription>;
-export type MessageCreatedSubscriptionResult = Apollo.SubscriptionResult<MessageCreatedSubscription>;

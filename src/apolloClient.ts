@@ -7,20 +7,11 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { onError } from "@apollo/client/link/error";
 import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
-import typeDefs from "graphql/localSchema";
+import { from } from "apollo-link";
 
 const cache = new InMemoryCache({
   typePolicies: {
-    Chat: {
-      fields: {
-        isGroup: {
-          read(_, { readField }) {
-            const users: any = readField("users");
-            return users?.length > 2 ?? 0;
-          }
-        }
-      }
-    },
+
     User: {
       fields: {
         profileImageUrl: {
@@ -33,23 +24,21 @@ const cache = new InMemoryCache({
   }
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  graphQLErrors?.forEach((err) => {
-    if (err.extensions?.code === "UNAUTHENTICATED") {
-      navigate("/auth");
-    }
-    console.log(err);
-    //TODO: do auth checks on more queries on the backend
-    /*
-      if (err.extensions) {
-        switch (err.extensions.code) {
-          case "UNAUTHENTICATED":
-        }
-      }*/
-  });
-  //TODO: error screen
-  networkError && console.error(networkError.message);
-});
+
+const errorLink = onError(({ graphQLErrors, operation, forward }) => {
+  if (graphQLErrors) {
+    // Handle Errors
+    graphQLErrors.forEach(console.log)
+  }
+
+  forward(operation)
+})
+
+
+// export const apolloClient = new ApolloClient({
+//   cache,
+//   link: from([errorLink, httpLink])
+// })
 
 const httpLink = createUploadLink({
   //uri: "http://127.0.0.1:4000/graphql",
@@ -57,13 +46,13 @@ const httpLink = createUploadLink({
   credentials: "include",
 });
 
-const wsLink = new WebSocketLink({
-  uri: "wss://bookshare-backend1234.herokuapp.com/graphql",
-  options: {
-    reconnect: true,
-    connectionParams: { authToken: localStorage.getItem("token") || null },
-  },
-});
+// const wsLink = new WebSocketLink({
+//   uri: "wss://bookshare-backend1234.herokuapp.com/graphql",
+//   options: {
+//     reconnect: true,
+//     connectionParams: { authToken: localStorage.getItem("token") || null },
+//   },
+// });
 
 const authLink = setContext((_, { headers }) => {
   //gets the jwt from storage
@@ -77,23 +66,22 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const terminatingLink = split(
-  ({ query }: any) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
-  },
-  wsLink,
-  httpLink
-);
+// const terminatingLink = split(
+//   ({ query }: any) => {
+//     const definition = getMainDefinition(query);
+//     return (
+//       definition.kind === "OperationDefinition" &&
+//       definition.operation === "subscription"
+//     );
+//   },
+//   // wsLink,
+//   httpLink
+// );
 
 export default new ApolloClient({
-  link: authLink.concat(errorLink).concat(terminatingLink),
+  link: errorLink.concat(authLink).concat(httpLink),
   cache,
   assumeImmutableResults: true,
-  typeDefs,
   // resolvers,
   //setting the default to return any data received along with an error instead of treating it as a network error
   defaultOptions: {

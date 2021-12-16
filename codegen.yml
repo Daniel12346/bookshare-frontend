@@ -1,5 +1,5 @@
 schema:
-  - https://chat-server1234.herokuapp.com/graphql
+  - https://bookshare-backend1234.herokuapp.com/graphql
   - ./src/graphql/localSchema.ts
 documents:
   - ./src/graphql/fragments.ts

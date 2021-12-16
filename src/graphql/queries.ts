@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { UserDetails, ChatDetails, MessageDetails } from "./fragments";
+import { UserDetails } from "./fragments";
 
 export const USERS_QUERY = gql`
   query users {
@@ -28,30 +28,6 @@ export const ME_QUERY = gql`
   ${UserDetails}
 `;
 
-//TODO: fix (relations)
-export const CHATS_QUERY = gql`
-  query chats {
-    chats {
-      ...ChatDetails
-    }
-  }
-  ${ChatDetails}
-`;
 
-export const CHAT_QUERY = gql`
-  query chat($id: String) {
-    chat(id: $id) {
-      ...ChatDetails
-    }
-  }
-  ${ChatDetails}
-`;
 
-export const MESSAGES_QUERY = gql`
-  query messages {
-    messages {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetails}
-`;
+

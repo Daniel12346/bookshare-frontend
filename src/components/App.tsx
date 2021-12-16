@@ -6,10 +6,8 @@ import UserList from "./UserList";
 import Login from "./Auth";
 import RouterPage from "./RouterPage";
 import Nav from "./Nav";
-import ChatScreen from "./screens/ChatScreen";
 // import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
-import { useInitMessageCreatedSubscription } from "./hooks/graphql";
 import SignUp from "./SignUp";
 import { useMeQuery } from "graphql/types";
 import AuthScreen from "./screens/AuthScreen";
@@ -19,7 +17,7 @@ import styled from "styled-components";
 
 export default () => {
   const { data, error } = useMeQuery();
-  useInitMessageCreatedSubscription();
+  // useInitMessageCreatedSubscription();
 
   return (
     <>
@@ -31,7 +29,6 @@ export default () => {
           <Nav>
             <StyledSpan><Logo width="60px"
               height="60px"></Logo></StyledSpan>
-            <Link to="/">chats</Link>
             <Link to="/users">users</Link>
             <Link to="/me">me</Link>
           </Nav>
@@ -40,8 +37,6 @@ export default () => {
             {/* <RouterPage component={<ChatList />} path="/" /> */}
             {/* <ChatScreen path="/chats/:chatId" /> */}
             <RouterPage component={<AuthScreen />} path="/auth" />
-            <RouterPage component={<Login />} path="/login" />
-            <RouterPage component={<SignUp />} path="/signup" />
             <RouterPage component={<UserList />} path="/users" />
             <RouterPage component={<MeScreen />} path="/me" />
           </MotionRouter>

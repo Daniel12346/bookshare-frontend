@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAddUserToChatMutation, useCreateChatMutation, useMeQuery, useUsersQuery } from "graphql/types";
+import { useMeQuery, useUsersQuery } from "graphql/types";
 import { ME_QUERY } from "graphql/queries";
 import StyledImage from "./StyledImage";
 import StyledCard from "./StyledCard";
@@ -10,13 +10,11 @@ import Loader from "./Loader";
 export default () => {
   const { data: meData } = useMeQuery();
   const { data, loading } = useUsersQuery();
-  const [createChat, { error: mutationError }] = useCreateChatMutation({ refetchQueries: [{ query: ME_QUERY }], onCompleted: (data) => { console.log("completed", data) } });
   return (
     <StyledContainer>
       {loading && <Loader />}
       {//error && error.message
       }
-      {mutationError && mutationError.message}
       <StyledUserList>
         {data?.users?.filter(user => user?.id !== meData?.me?.id).map(
           (user) =>

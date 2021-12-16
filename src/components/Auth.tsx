@@ -8,7 +8,9 @@ import Loader from "./Loader";
 export default ({ mode, setMode }: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
 
   const [logIn, { error, loading }] = useLogInMutation({
     update: (cache, res) => {
@@ -55,20 +57,23 @@ export default ({ mode, setMode }: any) => {
 
 
   //TODO: fix !
-  const [signUp] = useSignUpMutation({
-    variables: {
-      firstName: "Daniel4",
-      lastName: "Vrandečić",
-      email: "danezoki4@gmail.com",
-      password: "Danezoki4"
-    }
-  });
+  const [signUp, { error: error_s, loading: loading_s }] = useSignUpMutation({ errorPolicy: "ignore" });
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await signUp();
-    } catch {
+      const data = await signUp({
+        variables: {
+          firstName: "Daniel4",
+          lastName: "Vrandečić",
+          email: "danezoki4@gmail.com",
+          password: "Danezoki4"
+        }
+      });
+      console.log(data);
+    } catch (e) {
       console.log("Sign up failed");
+      console.log("ERROR", e);
     }
   }
 
@@ -81,31 +86,44 @@ export default ({ mode, setMode }: any) => {
   }
 
   return (
-    <StyledForm onSubmit={(e) => { mode === "logIn" ? handleLogIn(e) : handleSignUp() }} ><StyledButtonContainer>
+    <StyledForm onSubmit={e => { mode === "logIn" ? handleLogIn(e) : handleSignUp(e) }} ><StyledButtonContainer>
       <StyledButton isCurrentMode={mode === "logIn"} type="button" onClick={() => setMode("logIn")}>Log in</StyledButton>
       <StyledButton isCurrentMode={mode === "signUp"} type="button" onClick={() => setMode("signUp")}>Sign up</StyledButton>
     </StyledButtonContainer>
       {error && <span>{error.message}</span>}
       {loading && <Loader></Loader>}
+
+      {error_s && <span>{error_s.message}</span>}
+      {loading_s && <Loader></Loader>}
+
       <div id="form-inside">
         <label>
-          Name
-        <input
-            type="text"
-            value={name}
-            onChange={e => setName((e.target as HTMLInputElement).value)}
+          Email
+              <input
+            type="email"
+            value={email}
+            onChange={e => setEmail((e.target as HTMLInputElement).value)}
           />
         </label>
+
         {mode === "signUp" &&
-          (
+          (<><label>
+            First name
+            <input
+              type="text"
+              value={firstName}
+              onChange={e => setFirstName((e.target as HTMLInputElement).value)}
+            />
+          </label>
             <label>
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail((e.target as HTMLInputElement).value)}
+              Last name
+        <input
+                type="text"
+                value={lastName}
+                onChange={e => setLastName((e.target as HTMLInputElement).value)}
               />
-            </label>)}
+            </label></>
+          )}
         < label >
           Password
           < input
