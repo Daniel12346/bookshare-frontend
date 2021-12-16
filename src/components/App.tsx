@@ -12,16 +12,17 @@ import MeScreen from "./screens/MeScreen";
 import styled from "styled-components";
 import StyledUserInfo from "./StyledUserInfo";
 import StyledImage from "./StyledImage";
+import Loader from "./Loader";
 
 export default () => {
-  const { data, error } = useMeQuery();
+  const { data, error, loading } = useMeQuery();
 
   return (
     <>
       <GlobalStyle />
       {error && <span>{error.message.toUpperCase() !== "NOT AUTHENTICATED" && error.message}</span>}
       {console.log(data)}
-      {!error && data?.me ?
+      {loading ? <StyledMainLoaderContainer><Loader></Loader></StyledMainLoaderContainer> : !error && data?.me ?
         (<>
           <Nav>
             <StyledUserInfo>
@@ -89,4 +90,11 @@ const StyledLink = styled(Link)`
   padding: 0.2rem 1rem;
   font-size: 1rem;
   min-width: 2rem; 
+`
+const StyledMainLoaderContainer = styled.div`
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
 `

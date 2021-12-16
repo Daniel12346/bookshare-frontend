@@ -45,3 +45,18 @@ export const UPLOAD_IMAGE_MUTATION = gql`
     }
   }
 `
+
+export const ADD_BOOK_TO_WISHLIST_MUTATION = gql`
+  mutation addBookToWanted($userId: ID, $bookId: ID){
+    addBookToWanted(userId: $userId, bookId: $bookId){
+      success
+    }
+  }
+`
+export const ADD_BOOK_TO_MY_BOOKS_MUTATION = gql`
+  mutation addBookToOwned($userId: ID, $bookId: ID){
+    addBookToOwned(userId: $userId, bookId: $bookId){
+      success
+    }
+  }
+`

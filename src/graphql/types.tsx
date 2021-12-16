@@ -184,6 +184,34 @@ export type UploadImageMutation = (
   )> }
 );
 
+export type AddBookToWantedMutationVariables = Exact<{
+  userId?: Maybe<Scalars['ID']>;
+  bookId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type AddBookToWantedMutation = (
+  { __typename?: 'Mutation' }
+  & { addBookToWanted?: Maybe<(
+    { __typename?: 'MutationResult' }
+    & Pick<MutationResult, 'success'>
+  )> }
+);
+
+export type AddBookToOwnedMutationVariables = Exact<{
+  userId?: Maybe<Scalars['ID']>;
+  bookId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type AddBookToOwnedMutation = (
+  { __typename?: 'Mutation' }
+  & { addBookToOwned?: Maybe<(
+    { __typename?: 'MutationResult' }
+    & Pick<MutationResult, 'success'>
+  )> }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -323,6 +351,72 @@ export function useUploadImageMutation(baseOptions?: ApolloReactHooks.MutationHo
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const AddBookToWantedDocument = gql`
+    mutation addBookToWanted($userId: ID, $bookId: ID) {
+  addBookToWanted(userId: $userId, bookId: $bookId) {
+    success
+  }
+}
+    `;
+export type AddBookToWantedMutationFn = Apollo.MutationFunction<AddBookToWantedMutation, AddBookToWantedMutationVariables>;
+
+/**
+ * __useAddBookToWantedMutation__
+ *
+ * To run a mutation, you first call `useAddBookToWantedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBookToWantedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBookToWantedMutation, { data, loading, error }] = useAddBookToWantedMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      bookId: // value for 'bookId'
+ *   },
+ * });
+ */
+export function useAddBookToWantedMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddBookToWantedMutation, AddBookToWantedMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddBookToWantedMutation, AddBookToWantedMutationVariables>(AddBookToWantedDocument, baseOptions);
+      }
+export type AddBookToWantedMutationHookResult = ReturnType<typeof useAddBookToWantedMutation>;
+export type AddBookToWantedMutationResult = Apollo.MutationResult<AddBookToWantedMutation>;
+export type AddBookToWantedMutationOptions = Apollo.BaseMutationOptions<AddBookToWantedMutation, AddBookToWantedMutationVariables>;
+export const AddBookToOwnedDocument = gql`
+    mutation addBookToOwned($userId: ID, $bookId: ID) {
+  addBookToOwned(userId: $userId, bookId: $bookId) {
+    success
+  }
+}
+    `;
+export type AddBookToOwnedMutationFn = Apollo.MutationFunction<AddBookToOwnedMutation, AddBookToOwnedMutationVariables>;
+
+/**
+ * __useAddBookToOwnedMutation__
+ *
+ * To run a mutation, you first call `useAddBookToOwnedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBookToOwnedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBookToOwnedMutation, { data, loading, error }] = useAddBookToOwnedMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      bookId: // value for 'bookId'
+ *   },
+ * });
+ */
+export function useAddBookToOwnedMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddBookToOwnedMutation, AddBookToOwnedMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddBookToOwnedMutation, AddBookToOwnedMutationVariables>(AddBookToOwnedDocument, baseOptions);
+      }
+export type AddBookToOwnedMutationHookResult = ReturnType<typeof useAddBookToOwnedMutation>;
+export type AddBookToOwnedMutationResult = Apollo.MutationResult<AddBookToOwnedMutation>;
+export type AddBookToOwnedMutationOptions = Apollo.BaseMutationOptions<AddBookToOwnedMutation, AddBookToOwnedMutationVariables>;
 export const UsersDocument = gql`
     query users {
   users {
