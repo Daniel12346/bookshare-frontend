@@ -3,21 +3,18 @@ import { Router, Link } from "@reach/router";
 import { Location } from "@reach/router";
 import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
-import Login from "./Auth";
 import RouterPage from "./RouterPage";
 import Nav from "./Nav";
-// import ChatList from "./ChatList";
 import GlobalStyle from "./styled/GlobalStyle";
-import SignUp from "./SignUp";
 import { useMeQuery } from "graphql/types";
 import AuthScreen from "./screens/AuthScreen";
 import MeScreen from "./screens/MeScreen";
-import { ReactComponent as Logo } from "images/chat_logo.svg"
 import styled from "styled-components";
+import StyledUserInfo from "./StyledUserInfo";
+import StyledImage from "./StyledImage";
 
 export default () => {
   const { data, error } = useMeQuery();
-  // useInitMessageCreatedSubscription();
 
   return (
     <>
@@ -27,10 +24,14 @@ export default () => {
       {!error && data?.me ?
         (<>
           <Nav>
-            <StyledSpan><Logo width="60px"
-              height="60px"></Logo></StyledSpan>
-            <Link to="/users">users</Link>
-            <Link to="/me">me</Link>
+            <StyledUserInfo>
+              <StyledImage src={data.me.profileImageUrl || ""} alt={`${data.me}'s profile`}></StyledImage>
+              <span>{`${data.me.firstName}`}</span>
+            </StyledUserInfo>
+            <StyledLinksContainer>
+              <StyledLink to="/users">wishlist</StyledLink>
+              <StyledLink to="/me">my books</StyledLink>
+            </StyledLinksContainer>
           </Nav>
 
           <MotionRouter>
@@ -38,7 +39,7 @@ export default () => {
             {/* <ChatScreen path="/chats/:chatId" /> */}
             <RouterPage component={<AuthScreen />} path="/auth" />
             <RouterPage component={<UserList />} path="/users" />
-            <RouterPage component={<MeScreen />} path="/me" />
+            <RouterPage component={<MeScreen />} path="/" />
           </MotionRouter>
         </>)
         : <AuthScreen></AuthScreen>
@@ -70,4 +71,22 @@ const MotionRouter = ({ children }: MotionRouterProps) => (
   </Location>
 );
 
-const StyledSpan = styled.span`background: white`
+const StyledLinksContainer = styled.div`
+display: flex;
+min-width: 20%;
+flex-flow: row nowrap;
+justify-content: space-between;
+`
+
+const StyledLink = styled(Link)`
+  display: flex;
+  color: white;
+  text-decoration: none;
+  border: 3px solid white;
+  border-radius: 2rem;
+  text-align: center;
+  justify-content: center;
+  padding: 0.2rem 1rem;
+  font-size: 1rem;
+  min-width: 2rem; 
+`

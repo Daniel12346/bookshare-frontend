@@ -14,5 +14,6 @@ const rotate = keyframes`
 export default styled(Loader)`
     animation: ${rotate} 1.2s infinite;
     height: 50px;
+    fill: blue;
     width: 50px;
 `

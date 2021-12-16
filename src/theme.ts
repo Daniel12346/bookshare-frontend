@@ -6,7 +6,7 @@ export const theme = {
 
     //TODO:
     primary4: "#503722",
-    primary5: "hsl(348,75%,33%)",
+    primary5: "#7A6655",
     primary6: "hsl(348,76%,25%)",
 
     accent1: "hsl(50, 75%, 96%)",

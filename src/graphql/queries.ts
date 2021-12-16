@@ -28,6 +28,16 @@ export const ME_QUERY = gql`
   ${UserDetails}
 `;
 
-
+export const BOOKS_QUERY = gql`
+  query books{
+    books {
+      id
+      name
+      author
+      coverUrl
+      year
+    }
+  }
+`
 
 

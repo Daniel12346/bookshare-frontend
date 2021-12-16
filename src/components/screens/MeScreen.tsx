@@ -6,6 +6,7 @@ import { useUploadImageMutation } from "graphql/types";
 import React from "react";
 import StyledImage from "components/StyledImage";
 import Loader from "components/Loader";
+import BooksTest from "components/BooksTest";
 export default () => {
     const [uploadImage, { error, loading }] = useUploadImageMutation({ refetchQueries: [{ query: ME_QUERY }] });
     const { me } = useMe();
@@ -22,6 +23,7 @@ export default () => {
                 }
             }}></input>
             {loading && <Loader></Loader>}
+            <BooksTest></BooksTest>
         </StyledContainer>)
 }
 

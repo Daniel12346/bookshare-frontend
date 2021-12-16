@@ -139,11 +139,6 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
-export type Chat = {
-  __typename?: 'Chat';
-  isGroup: Scalars['Boolean'];
-};
-
 export type UserDetailsFragment = (
   { __typename?: 'User' }
   & Pick<User, 'firstName' | 'lastName' | 'id' | 'profileImageUrl'>
@@ -209,6 +204,17 @@ export type MeQuery = (
     { __typename?: 'User' }
     & UserDetailsFragment
   )> }
+);
+
+export type BooksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BooksQuery = (
+  { __typename?: 'Query' }
+  & { books: Array<Maybe<(
+    { __typename?: 'Book' }
+    & Pick<Book, 'id' | 'name' | 'author' | 'coverUrl' | 'year'>
+  )>> }
 );
 
 export const UserDetailsFragmentDoc = gql`
@@ -381,3 +387,39 @@ export function useMeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptio
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const BooksDocument = gql`
+    query books {
+  books {
+    id
+    name
+    author
+    coverUrl
+    year
+  }
+}
+    `;
+
+/**
+ * __useBooksQuery__
+ *
+ * To run a query within a React component, call `useBooksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBooksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBooksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useBooksQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<BooksQuery, BooksQueryVariables>) {
+        return ApolloReactHooks.useQuery<BooksQuery, BooksQueryVariables>(BooksDocument, baseOptions);
+      }
+export function useBooksLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<BooksQuery, BooksQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<BooksQuery, BooksQueryVariables>(BooksDocument, baseOptions);
+        }
+export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
+export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
+export type BooksQueryResult = Apollo.QueryResult<BooksQuery, BooksQueryVariables>;

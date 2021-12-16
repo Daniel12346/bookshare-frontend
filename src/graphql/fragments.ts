@@ -5,6 +5,7 @@ export const UserDetails = gql`
     firstName
     lastName
     id
+    profileImageUrl
   }
 `;
 

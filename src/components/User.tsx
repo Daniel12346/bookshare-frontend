@@ -1,8 +1,9 @@
-export default () => { }
-// import React from "react"
+export { }
+// import { useMeQuery } from "graphql/types";
+//import React from "react"
 // import styled from "styled-components"
 // export default () => {
-//     const { me } = useUserQuery();
+//     const { me } = useMeQuery();
 //     return (
 //         <StyledContainer>
 //             { me?.profileImageUrl && <StyledImage large alt={""} src={me.profileImageUrl} />}

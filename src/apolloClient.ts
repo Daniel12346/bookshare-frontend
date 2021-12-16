@@ -1,13 +1,9 @@
 //sets up the apollo client
 //not using apollo-boost because it does not support subscriptions
-import { ApolloClient, InMemoryCache, split } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { WebSocketLink } from "@apollo/client/link/ws";
-import { getMainDefinition } from "@apollo/client/utilities";
 import { onError } from "@apollo/client/link/error";
-import { navigate } from "@reach/router";
 import { createUploadLink } from "apollo-upload-client";
-import { from } from "apollo-link";
 
 const cache = new InMemoryCache({
   typePolicies: {
