@@ -40,4 +40,3 @@ export const BOOKS_QUERY = gql`
   }
 `
 
-

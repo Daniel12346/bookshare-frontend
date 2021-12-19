@@ -4,6 +4,8 @@ import { useLogInMutation, useSignUpMutation } from "graphql/types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import Loader from "./Loader";
+import { StyledButton } from "./StyledButton";
+import { StyledButtonContainer } from "./StyledButtonContainer";
 
 export default ({ mode, setMode }: any) => {
   const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ export default ({ mode, setMode }: any) => {
   const [lastName, setLastName] = useState("");
 
 
-  const [logIn, { error, loading }] = useLogInMutation({
+  const [logIn, { error: logInError, loading }] = useLogInMutation({
     update: (cache, res) => {
       const token = res.data?.logIn;
       if (token) {
@@ -22,42 +24,11 @@ export default ({ mode, setMode }: any) => {
     }, onCompleted: () => { navigate("/") }
   });
 
-  // const logIn = async (variables: LogInMutationVariables): Promise<void> => {
-  //   try {
-  //     logInMutation({
-  //       variables,
-  //       //the update function sets the received jwt inside the storage
-  //       update: (_, { data }) => {
-  //         const token = data?.logIn;
-  //         token && localStorage.setItem("token", token);
-  //       },
-  //       //after the mutation, ME_QUERY is refetched with the token in the Authorization header (setting the header was set up in apolloClient.ts)
-  //       refetchQueries: [{ query: ME_QUERY }],
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
 
-
-  // const handleLogIn = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await logIn({ variables: { password, email } });
-  //     if (res.errors) {
-  //       throw ("E");
-  //     }
-  //     setPassword("");
-  //     setEmail("");
-  //     navigate("/");
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
 
 
   //TODO: fix !
-  const [signUp, { error: error_s, loading: loading_s }] = useSignUpMutation({ errorPolicy: "ignore" });
+  const [signUp, { error: signUpError, loading: loading_s }] = useSignUpMutation();
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,10 +61,10 @@ export default ({ mode, setMode }: any) => {
       <StyledButton isCurrentMode={mode === "logIn"} type="button" onClick={() => setMode("logIn")}>Log in</StyledButton>
       <StyledButton isCurrentMode={mode === "signUp"} type="button" onClick={() => setMode("signUp")}>Sign up</StyledButton>
     </StyledButtonContainer>
-      {error && <span>{error.message}</span>}
+      {logInError && <span>{logInError.message}</span>}
       {loading && <Loader></Loader>}
 
-      {error_s && <span>{error_s.message}</span>}
+      {signUpError && <span>{signUpError.message}</span>}
       {loading_s && <Loader></Loader>}
 
       <div id="form-inside">
@@ -133,7 +104,6 @@ export default ({ mode, setMode }: any) => {
           />
         </label>
         <StyledButton id="logIn" type="submit">{mode === "logIn" ? "log in" : "sign up"}</StyledButton>
-
       </div>
     </StyledForm >
   );
@@ -178,28 +148,6 @@ const StyledForm = styled.form`
 }
 `
 
-interface StyledButtonProps {
-  isCurrentMode?: boolean
-}
 
-const StyledButton = styled.button<StyledButtonProps>`
-cursor: pointer;
-padding: 0.3rem;
-background: ${({ theme }) => theme.colors.primary2};
-background: ${({ isCurrentMode, theme }) => isCurrentMode ? theme.colors.primary4 : theme.colors.primary2};
-max-width: 10rem;
-`
-const StyledButtonContainer = styled.div`
-max-height: 2rem;
-display: flex;
-flex-flow: row nowrap;
-width: 100%;
-justify-content: space-evenly;
-align-items: center;
-height: auto;
 
-button{
-  min-width: 40%;
-}
-`
 

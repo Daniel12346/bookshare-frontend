@@ -2,15 +2,19 @@ import { useMe } from "components/hooks/me";
 import styled from "styled-components"
 import Logout from "components/Logout";
 import { ME_QUERY } from "graphql/queries";
-import { useUploadImageMutation } from "graphql/types";
+import { Book, useBooksQuery, useUploadImageMutation } from "graphql/types";
 import React from "react";
 import StyledImage from "components/StyledImage";
 import Loader from "components/Loader";
-import BooksTest from "components/BooksTest";
+import BooksTest from "components/BookList";
 export default () => {
     const [uploadImage, { error, loading }] = useUploadImageMutation({ refetchQueries: [{ query: ME_QUERY }] });
     const { me } = useMe();
+    const { data: data_b, loading: loading_b, error: error_b } = useBooksQuery()
+    const books = data_b?.books;
+    error && console.log(error);
     return (
+
         <StyledContainer>
             { me?.profileImageUrl && <StyledImage large alt={""} src={me.profileImageUrl} />}
             <StyledName>{`${me?.firstName}  ${me?.lastName}`}</StyledName>
@@ -23,7 +27,7 @@ export default () => {
                 }
             }}></input>
             {loading && <Loader></Loader>}
-            <BooksTest></BooksTest>
+            {books && <BooksTest books={books as Book[]}></BooksTest>}
         </StyledContainer>)
 }
 

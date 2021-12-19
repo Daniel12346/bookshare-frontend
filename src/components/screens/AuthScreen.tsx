@@ -10,7 +10,7 @@ export default () => {
     const [mode, setMode] = useState<Mode>("logIn")
 
     return (
-        <>
+        <StyledAuthScreenContainer>
             <StyledH1Container>
                 <StyledH1>BookShare</StyledH1>
             </StyledH1Container>
@@ -19,18 +19,17 @@ export default () => {
                 <StyledBooksImg src="books.jpg"></StyledBooksImg>
 
             </StyledAuthContainer>
-        </>)
+        </StyledAuthScreenContainer>)
 }
 
 const StyledAuthContainer = styled.div`
-    margin-top: 10vh;
+    margin-top: 8vh;
     display: flex;
     min-height: 50vh;
-    background: "white";
-
+    width: 50vw;
     flex-flow: row wrap;
-    justify-content: center;
     gap: 2rem;
+    justify-content: space-between;
     span{
         display: flex;
         background: ${({ theme }) => theme.colors.primary2};
@@ -38,19 +37,36 @@ const StyledAuthContainer = styled.div`
     }
     >*{
         max-height: 20rem;
-        flex-basis: 50%;
+        flex: 1 0 45%;
         max-width: 20rem;
-        min-width:  10rem;
-
+        min-width:  5rem;
     }
 `
 
 const StyledBooksImg = styled.img`
     width: auto;
+    object-fit: cover;
+    object-position: center;
 `
 
 const StyledH1Container = styled.div`
-    text-align: center;
-    width:100vw;
-    max-width: 40rem;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    @media screen and (max-width: 600px){
+        justify-content: center;
+    }
+`
+
+const StyledAuthScreenContainer = styled.div`
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-self: center;
+    padding-top: 7vmin;
+    >*{
+        width: 100%;
+        min-width: 300px;
+        max-width: 55vmax;
+    }
 `
