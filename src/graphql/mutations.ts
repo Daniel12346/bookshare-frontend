@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { UserDetails } from "./fragments";
+import { UserInfo } from "./fragments";
 
 export const LOGIN_MUTATION = gql`
   mutation logIn($email: String!, $password: String!) {
@@ -30,10 +30,10 @@ export const SIGNUP_MUTATION = gql`
       email: $email
       password: $password
     ) {
-      ...UserDetails
+      ...UserInfo
     }
   }
-  ${UserDetails}
+  ${UserInfo}
 `;
 
 

@@ -5,6 +5,7 @@ import StyledImage from "./StyledImage";
 import StyledCard from "./StyledCard";
 import Loader from "./Loader";
 import StyledUserInfo from "./StyledUserInfo";
+import { navigate } from "@reach/router";
 
 export default () => {
   const { data: meData } = useMeQuery();
@@ -18,7 +19,7 @@ export default () => {
         {data?.users?.filter(user => user?.id !== meData?.me?.id).map(
           (user) =>
             user && (
-              <StyledCard key={user.id}>
+              <StyledCard key={user.id} onClick={() => navigate(`user/${user.id}`)}>
                 <StyledUserInfo>
                   <StyledImage src={user.profileImageUrl || ""}></StyledImage>
                   <span>{user.firstName + " " + user.lastName}</span>

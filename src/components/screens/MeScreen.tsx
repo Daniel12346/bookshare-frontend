@@ -10,9 +10,10 @@ import BooksTest from "components/BookList";
 export default () => {
     const [uploadImage, { error, loading }] = useUploadImageMutation({ refetchQueries: [{ query: ME_QUERY }] });
     const { me } = useMe();
-    const { data: data_b, loading: loading_b, error: error_b } = useBooksQuery()
-    const books = data_b?.books;
+    const { data: dataBooks, loading: loadingBooks, error: errorBooks } = useBooksQuery()
+    const books = dataBooks?.books;
     error && console.log(error);
+    //TODO: error management
     return (
 
         <StyledContainer>
@@ -22,7 +23,6 @@ export default () => {
             {error && error.message}
             <input type="file" onChange={({ target: { validity, files: [file] } }: any) => {
                 if (validity.valid) {
-                    console.log(file);
                     uploadImage({ variables: { file } });
                 }
             }}></input>

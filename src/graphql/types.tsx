@@ -139,9 +139,36 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
-export type UserDetailsFragment = (
+export type UserInfoFragment = (
   { __typename?: 'User' }
   & Pick<User, 'firstName' | 'lastName' | 'id' | 'profileImageUrl'>
+);
+
+export type BookInfoFragment = (
+  { __typename?: 'Book' }
+  & Pick<Book, 'id' | 'name' | 'author' | 'coverUrl' | 'year'>
+);
+
+export type UserBooksFragment = (
+  { __typename?: 'User' }
+  & { wanted: Array<Maybe<(
+    { __typename?: 'Book' }
+    & BookInfoFragment
+  )>>, owned: Array<Maybe<(
+    { __typename?: 'Book' }
+    & BookInfoFragment
+  )>> }
+);
+
+export type BookUsersFragment = (
+  { __typename?: 'Book' }
+  & { wantedBy: Array<Maybe<(
+    { __typename?: 'User' }
+    & UserInfoFragment
+  )>>, ownedBy: Array<Maybe<(
+    { __typename?: 'User' }
+    & UserInfoFragment
+  )>> }
 );
 
 export type LogInMutationVariables = Exact<{
@@ -167,7 +194,7 @@ export type SignUpMutation = (
   { __typename?: 'Mutation' }
   & { createUser: (
     { __typename?: 'User' }
-    & UserDetailsFragment
+    & UserInfoFragment
   ) }
 );
 
@@ -219,7 +246,7 @@ export type UsersQuery = (
   { __typename?: 'Query' }
   & { users: Array<Maybe<(
     { __typename?: 'User' }
-    & UserDetailsFragment
+    & UserInfoFragment
   )>> }
 );
 
@@ -230,7 +257,8 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & UserDetailsFragment
+    & UserInfoFragment
+    & UserBooksFragment
   )> }
 );
 
@@ -241,18 +269,75 @@ export type BooksQuery = (
   { __typename?: 'Query' }
   & { books: Array<Maybe<(
     { __typename?: 'Book' }
-    & Pick<Book, 'id' | 'name' | 'author' | 'coverUrl' | 'year'>
+    & BookInfoFragment
   )>> }
 );
 
-export const UserDetailsFragmentDoc = gql`
-    fragment UserDetails on User {
+export type BookQueryVariables = Exact<{
+  id?: Maybe<Scalars['String']>;
+}>;
+
+
+export type BookQuery = (
+  { __typename?: 'Query' }
+  & { book?: Maybe<(
+    { __typename?: 'Book' }
+    & BookInfoFragment
+    & BookUsersFragment
+  )> }
+);
+
+export type UserQueryVariables = Exact<{
+  id?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UserQuery = (
+  { __typename?: 'Query' }
+  & { user?: Maybe<(
+    { __typename?: 'User' }
+    & UserInfoFragment
+    & UserBooksFragment
+  )> }
+);
+
+export const BookInfoFragmentDoc = gql`
+    fragment BookInfo on Book {
+  id
+  name
+  author
+  coverUrl
+  year
+}
+    `;
+export const UserBooksFragmentDoc = gql`
+    fragment UserBooks on User {
+  wanted {
+    ...BookInfo
+  }
+  owned {
+    ...BookInfo
+  }
+}
+    ${BookInfoFragmentDoc}`;
+export const UserInfoFragmentDoc = gql`
+    fragment UserInfo on User {
   firstName
   lastName
   id
   profileImageUrl
 }
     `;
+export const BookUsersFragmentDoc = gql`
+    fragment BookUsers on Book {
+  wantedBy {
+    ...UserInfo
+  }
+  ownedBy {
+    ...UserInfo
+  }
+}
+    ${UserInfoFragmentDoc}`;
 export const LogInDocument = gql`
     mutation logIn($email: String!, $password: String!) {
   logIn(email: $email, password: $password)
@@ -287,10 +372,10 @@ export type LogInMutationOptions = Apollo.BaseMutationOptions<LogInMutation, Log
 export const SignUpDocument = gql`
     mutation signUp($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
   createUser(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
-    ...UserDetails
+    ...UserInfo
   }
 }
-    ${UserDetailsFragmentDoc}`;
+    ${UserInfoFragmentDoc}`;
 export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
 
 /**
@@ -420,10 +505,10 @@ export type AddBookToOwnedMutationOptions = Apollo.BaseMutationOptions<AddBookTo
 export const UsersDocument = gql`
     query users {
   users {
-    ...UserDetails
+    ...UserInfo
   }
 }
-    ${UserDetailsFragmentDoc}`;
+    ${UserInfoFragmentDoc}`;
 
 /**
  * __useUsersQuery__
@@ -452,10 +537,12 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const MeDocument = gql`
     query me {
   me {
-    ...UserDetails
+    ...UserInfo
+    ...UserBooks
   }
 }
-    ${UserDetailsFragmentDoc}`;
+    ${UserInfoFragmentDoc}
+${UserBooksFragmentDoc}`;
 
 /**
  * __useMeQuery__
@@ -484,14 +571,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const BooksDocument = gql`
     query books {
   books {
-    id
-    name
-    author
-    coverUrl
-    year
+    ...BookInfo
   }
 }
-    `;
+    ${BookInfoFragmentDoc}`;
 
 /**
  * __useBooksQuery__
@@ -517,3 +600,73 @@ export function useBooksLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type BooksQueryHookResult = ReturnType<typeof useBooksQuery>;
 export type BooksLazyQueryHookResult = ReturnType<typeof useBooksLazyQuery>;
 export type BooksQueryResult = Apollo.QueryResult<BooksQuery, BooksQueryVariables>;
+export const BookDocument = gql`
+    query book($id: String) {
+  book(id: $id) {
+    ...BookInfo
+    ...BookUsers
+  }
+}
+    ${BookInfoFragmentDoc}
+${BookUsersFragmentDoc}`;
+
+/**
+ * __useBookQuery__
+ *
+ * To run a query within a React component, call `useBookQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBookQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBookQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useBookQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<BookQuery, BookQueryVariables>) {
+        return ApolloReactHooks.useQuery<BookQuery, BookQueryVariables>(BookDocument, baseOptions);
+      }
+export function useBookLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<BookQuery, BookQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<BookQuery, BookQueryVariables>(BookDocument, baseOptions);
+        }
+export type BookQueryHookResult = ReturnType<typeof useBookQuery>;
+export type BookLazyQueryHookResult = ReturnType<typeof useBookLazyQuery>;
+export type BookQueryResult = Apollo.QueryResult<BookQuery, BookQueryVariables>;
+export const UserDocument = gql`
+    query user($id: String) {
+  user(id: $id) {
+    ...UserInfo
+    ...UserBooks
+  }
+}
+    ${UserInfoFragmentDoc}
+${UserBooksFragmentDoc}`;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        return ApolloReactHooks.useQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+      }
+export function useUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, baseOptions);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;

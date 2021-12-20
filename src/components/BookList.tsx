@@ -11,11 +11,9 @@ interface Props {
 export default ({ books }: Props) => {
 
     return (
-        <>
-            <StyledBookList>
-                {books && books.map(book => book && <Book key={book.id} book={book as TBook}></Book>)}
-            </StyledBookList>
-        </>
+        <StyledBookList>
+            {books && books.length > 0 ? books.map(book => book && <Book key={book.id} book={book as TBook}></Book>) : <span>No books here yet</span>}
+        </StyledBookList>
     )
 }
 

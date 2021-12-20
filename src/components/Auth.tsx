@@ -35,13 +35,17 @@ export default ({ mode, setMode }: any) => {
     try {
       const data = await signUp({
         variables: {
-          firstName: "Daniel4",
-          lastName: "Vrandečić",
-          email: "danezoki4@gmail.com",
-          password: "Danezoki4"
+          firstName,
+          lastName,
+          email,
+          password
         }
       });
       console.log(data);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
     } catch (e) {
       console.log("Sign up failed");
       console.log("ERROR", e);

@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
-import { UserDetails } from "./fragments";
+import { UserInfo, UserBooks, BookInfo, BookUsers } from "./fragments";
 
 export const USERS_QUERY = gql`
   query users {
     users {
-      ...UserDetails
+      ...UserInfo
     }
   }
-  ${UserDetails}
+  ${UserInfo}
 `;
 
 export const ME_QUERY = gql`
@@ -18,25 +18,41 @@ export const ME_QUERY = gql`
       #   name      
       #   isGroup @client
       #   # users{
-      #   #   ...UserDetails
+      #   #   ...UserInfo
       #   # }
-      ...UserDetails
-
-       
+      ...UserInfo
+      ...UserBooks       
     }
   }
-  ${UserDetails}
+  ${UserInfo}
+  ${UserBooks}
 `;
 
 export const BOOKS_QUERY = gql`
   query books{
-    books {
-      id
-      name
-      author
-      coverUrl
-      year
+    books{
+      ...BookInfo
+      }
+    }  
+    ${BookInfo}
+`
+export const BOOK_QUERY = gql`
+  query book($id:String){
+    book(id:$id){
+      ...BookInfo
+      ...BookUsers
     }
   }
+  ${BookInfo}
+  ${BookUsers}
 `
-
+export const USER_QUERY = gql`
+  query user($id:String){
+    user(id:$id){
+      ...UserInfo
+      ...UserBooks
+    }
+  }
+  ${BookInfo}
+  ${BookUsers}
+`

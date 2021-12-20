@@ -13,6 +13,7 @@ import styled from "styled-components";
 import StyledUserInfo from "./StyledUserInfo";
 import StyledImage from "./StyledImage";
 import Loader from "./Loader";
+import UserScreen from "./UserScreen";
 
 export default () => {
   const { data, error, loading } = useMeQuery();
@@ -24,9 +25,10 @@ export default () => {
       {console.log(data)}
       {loading ? <StyledMainLoaderContainer><Loader></Loader></StyledMainLoaderContainer> : !error && data?.me ?
         (<>
-          <Nav>
+          <Nav>{
+          }
             <StyledUserInfo>
-              <StyledImage src={data.me.profileImageUrl || ""} alt={`${data.me}'s profile`}></StyledImage>
+              <StyledImage src={data.me.profileImageUrl || ""} alt={`${data.me?.firstName}'s profile`}></StyledImage>
               <span>{`${data.me.firstName}`}</span>
             </StyledUserInfo>
             <StyledLinksContainer>
@@ -37,9 +39,9 @@ export default () => {
 
           <MotionRouter>
             {/* <RouterPage component={<ChatList />} path="/" /> */}
-            {/* <ChatScreen path="/chats/:chatId" /> */}
             <RouterPage component={<AuthScreen />} path="/auth" />
             <RouterPage component={<UserList />} path="/users" />
+            <RouterPage component={<UserScreen />} path="/user/:userId" />
             <RouterPage component={<MeScreen />} path="/" />
           </MotionRouter>
         </>)
