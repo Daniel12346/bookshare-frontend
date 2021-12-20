@@ -14,6 +14,7 @@ import StyledUserInfo from "./StyledUserInfo";
 import StyledImage from "./StyledImage";
 import Loader from "./Loader";
 import UserScreen from "./UserScreen";
+import MyBooksScreen from "./screens/MyBooksScreen";
 
 export default () => {
   const { data, error, loading } = useMeQuery();
@@ -32,8 +33,9 @@ export default () => {
               <span>{`${data.me.firstName}`}</span>
             </StyledUserInfo>
             <StyledLinksContainer>
-              <StyledLink to="/users">wishlist</StyledLink>
-              <StyledLink to="/me">my books</StyledLink>
+              <StyledLink to="/users">users</StyledLink>
+              <StyledLink to="/my_books">my books</StyledLink>
+              <StyledLink to="/wishlist">wishlist</StyledLink>
             </StyledLinksContainer>
           </Nav>
 
@@ -43,6 +45,7 @@ export default () => {
             <RouterPage component={<UserList />} path="/users" />
             <RouterPage component={<UserScreen />} path="/user/:userId" />
             <RouterPage component={<MeScreen />} path="/" />
+            <RouterPage component={<MyBooksScreen />} path="my_books"></RouterPage>
           </MotionRouter>
         </>)
         : <AuthScreen></AuthScreen>

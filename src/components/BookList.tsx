@@ -48,6 +48,7 @@ const StyledBookList = styled.ul`
     /* TODO: alternate row wrap */
     flex-flow: column nowrap;
     background: ${({ theme }) => theme.colors.primary1};
+    >*{min-height: 6rem}
 `
 
 const StyledBookInfo = styled.div`
