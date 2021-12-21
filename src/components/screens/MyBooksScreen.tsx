@@ -37,7 +37,7 @@ export default () => {
         e.preventDefault();
         //TODO: optimistic response ili nisto drugo
         //????????
-        addBookToOwned({ variables: { userId: me?.id, bookId: id }, update: () => { } });
+        addBookToOwned({ variables: { userId: me?.id, bookId: id }, refetchQueries: [{ query: ME_QUERY }] });
         setYear("");
         setId("");
         setTitle("");

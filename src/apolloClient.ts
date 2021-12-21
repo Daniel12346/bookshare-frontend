@@ -21,10 +21,13 @@ const cache = new InMemoryCache({
 });
 
 
-const errorLink = onError(({ graphQLErrors, operation, forward }) => {
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   if (graphQLErrors) {
     // Handle Errors
     graphQLErrors.forEach(console.log)
+  }
+  if (networkError) {
+    console.log(networkError)
   }
 
   forward(operation)

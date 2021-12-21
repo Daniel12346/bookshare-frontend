@@ -30,6 +30,7 @@ export const UserBooks = gql`
      ...BookInfo
    }
   }
+  ${BookInfo}
 `;
 
 export const BookUsers = gql`
