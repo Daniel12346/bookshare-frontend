@@ -4,7 +4,7 @@ import { Column } from "components/styled/utils";
 import { StyledButton } from "components/StyledButton";
 import { StyledH1 } from "components/StyledH1";
 import { ME_QUERY } from "graphql/queries";
-import { Book, useAddBookToOwnedMutation, useBooksQuery, useMeQuery } from "graphql/types";
+import { Book, useAddBookToWantedMutation, useBooksQuery, useMeQuery } from "graphql/types";
 import React, { useState } from "react"
 import styled from "styled-components";
 
@@ -13,14 +13,14 @@ import styled from "styled-components";
 export default () => {
     const { data, loading, error } = useMeQuery();
     const me = data?.me;
-    const myBooks = me?.owned ?? [];
+    const myWantedBooks = me?.wanted ?? [];
     const { data: dataBooks, loading: loadingAll, error: errorAll } = useBooksQuery();
     const allBooks = dataBooks?.books ?? [];
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [year, setYear] = useState("");
     const [id, setId] = useState("");
-    const [addBookToOwned] = useAddBookToOwnedMutation()
+    const [addBookToWanted] = useAddBookToWantedMutation()
     const [filtered, setFiltered] = useState<Book[]>();
 
     const handleAutoFill = (book: Book) => {
@@ -30,13 +30,13 @@ export default () => {
         setId(book.id);
     }
 
-    const handleAddToMyBooks = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleAddToWishlist = (e: React.FormEvent<HTMLFormElement>) => {
         //TODO: createBook umisto return
         if (!id) return;
         e.preventDefault();
         //TODO: optimistic response ili nisto drugo
         //????????
-        addBookToOwned({ variables: { userId: me?.id, bookId: id }, refetchQueries: [{ query: ME_QUERY }] });
+        addBookToWanted({ variables: { userId: me?.id, bookId: id }, refetchQueries: [{ query: ME_QUERY }] });
         setYear("");
         setId("");
         setTitle("");
@@ -47,9 +47,9 @@ export default () => {
     return <StyledScreenContainer>
         <StyledContainer>
             {/* //TODO: ! */}
-            <StyledH1>My Books</StyledH1>
+            <StyledH1>Wishlist</StyledH1>
             <Column>
-                <StyledForm onSubmit={handleAddToMyBooks} >
+                <StyledForm onSubmit={handleAddToWishlist} >
                     <span>search book to add by title, author, etc.</span>
                     {error && <span>{error.message}</span>}
                     {loading && <Loader></Loader>}
@@ -77,13 +77,13 @@ export default () => {
                             }} />
                         </label>
 
-                        <StyledButton id="logIn" type="submit">Add to my books</StyledButton>
+                        <StyledButton id="logIn" type="submit">Add to wishlist</StyledButton>
                     </div>
                 </StyledForm >
                 <BookSuggestionList books={filtered as Book[]} handleAutoFill={handleAutoFill}></BookSuggestionList>
             </Column>
             <Column id="bookListColumn">
-                <BookList books={myBooks as Book[]}></BookList>
+                <BookList books={myWantedBooks as Book[]}></BookList>
             </Column>
         </StyledContainer>
     </StyledScreenContainer>

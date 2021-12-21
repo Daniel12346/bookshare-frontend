@@ -15,6 +15,7 @@ import StyledImage from "./StyledImage";
 import Loader from "./Loader";
 import UserScreen from "./UserScreen";
 import MyBooksScreen from "./screens/MyBooksScreen";
+import WishlistScreen from "./screens/WishlistScreen";
 
 export default () => {
   const { data, error, loading } = useMeQuery();
@@ -46,6 +47,8 @@ export default () => {
             <RouterPage component={<UserScreen />} path="/user/:userId" />
             <RouterPage component={<MeScreen />} path="/" />
             <RouterPage component={<MyBooksScreen />} path="my_books"></RouterPage>
+            <RouterPage component={<WishlistScreen />} path="wishlist"></RouterPage>
+
           </MotionRouter>
         </>)
         : <AuthScreen></AuthScreen>
@@ -60,22 +63,20 @@ interface MotionRouterProps {
 
 const MotionRouter = ({ children }: MotionRouterProps) => (
   <Location>
-    {({ location }) => (
-      <AnimatePresence>
-        <motion.div
-          animate={{ transition: { when: "afterChildren", delay: 300 } }}
-          exit={{
-            opacity: 0.3,
-            x: "100%",
-          }}
-          key={location.key}
-        >
-          <Router location={location}>{children}</Router>
-        </motion.div>
-      </AnimatePresence>
-    )}
+    {({ location }) => <Router location={location}>{children}</Router>}
   </Location>
 );
+
+// <AnimatePresence>
+//   <motion.div
+//     animate={{ transition: { when: "afterChildren", delay: 300 } }}
+//     exit={{
+//       opacity: 0.3,
+//       x: "100%",
+//     }}
+//     key={location.key}
+//   >
+
 
 const StyledLinksContainer = styled.div`
 display: flex;

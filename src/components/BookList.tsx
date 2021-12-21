@@ -41,7 +41,7 @@ const Book = ({ book: { id, name, author, year, coverUrl } }: BookProps) => {
 }
 
 const StyledBookList = styled.ul`   
-    width: 40vw;
+    width: 100%;
     min-width: 300px;
     padding: 1rem;
     display: flex;
