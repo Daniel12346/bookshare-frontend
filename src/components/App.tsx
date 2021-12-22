@@ -13,10 +13,13 @@ import styled from "styled-components";
 import StyledUserInfo from "./StyledUserInfo";
 import StyledImage from "./StyledImage";
 import Loader from "./Loader";
-import UserScreen from "./UserScreen";
+import UserScreen from "./screens/UserScreen";
 import MyBooksScreen from "./screens/MyBooksScreen";
 import WishlistScreen from "./screens/WishlistScreen";
 import LibraryScreen from "./screens/LibraryScreen";
+import { ReactComponent as LibraryIcon } from "images/library-book-svgrepo-com.svg"
+import BookScreen from "./screens/BookScreen";
+
 
 export default () => {
   const { data, error, loading } = useMeQuery();
@@ -38,6 +41,7 @@ export default () => {
               <StyledLink to="/users">users</StyledLink>
               <StyledLink to="/my_books">my books</StyledLink>
               <StyledLink to="/wishlist">wishlist</StyledLink>
+              <StyledLink to="/books" style={{ border: "none" }}><LibraryIcon width="1.1rem" fill="white"></LibraryIcon></StyledLink>
             </StyledLinksContainer>
           </Nav>
 
@@ -50,6 +54,8 @@ export default () => {
             <RouterPage component={<MyBooksScreen />} path="my_books"></RouterPage>
             <RouterPage component={<WishlistScreen />} path="wishlist"></RouterPage>
             <RouterPage component={<LibraryScreen />} path="books"></RouterPage>
+            <RouterPage component={<BookScreen />} path="book/:bookId"></RouterPage>
+
 
           </MotionRouter>
         </>)

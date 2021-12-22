@@ -3,18 +3,25 @@ import { Book as TBook, useAddBookToOwnedMutation, useBooksQuery } from "graphql
 import Loader from "./Loader";
 import styled from "styled-components";
 import { useMe } from "./hooks/me";
+import { navigate } from "@reach/router";
 
 interface Props {
     books: TBook[]
     heading?: string
+    //TODO: onRemove umisto ovega
+    hasDeleteButtons?: boolean,
+    booksAreLinks?: boolean
 }
 
-export default ({ books, heading }: Props) => {
+export default ({ books, heading, hasDeleteButtons, booksAreLinks }: Props) => {
 
     return (
         <StyledBookList>
             {heading && <StyledHeading>{heading}</StyledHeading>}
-            {books && books.length > 0 ? books.map(book => book && <Book key={book.id} book={book as TBook}></Book>)
+            {books && books.length > 0 ? books.map(book => book && <Book key={book.id} book={book as TBook}
+                hasDeleteButtons={hasDeleteButtons}
+                booksAreLinks={booksAreLinks}
+            ></Book>)
                 : <span id="noBooks">No books here yet</span>}
         </StyledBookList>
     )
@@ -22,18 +29,22 @@ export default ({ books, heading }: Props) => {
 
 interface BookProps {
     book: TBook,
+    hasDeleteButtons?: boolean,
+    booksAreLinks?: boolean;
     //TODO:
     handleClick?: ((event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void) | undefined
 }
 
 
 
-const Book = ({ book: { id, name, author, year, coverUrl } }: BookProps) => {
-    const { id: myId } = useMe();
-    const [addBookToOwned, { error }] = useAddBookToOwnedMutation();
-    error && console.log(error);
+const Book = ({ book: { id, name, author, year, coverUrl }, hasDeleteButtons, booksAreLinks }: BookProps) => {
+    // const { id: myId } = useMe();
+    // const [addBookToOwned, { error }] = useAddBookToOwnedMutation();
+    // error && console.log(error);
     return (
-        <StyledListItem onClick={() => addBookToOwned({ variables: { userId: myId, bookId: id } })}>
+        <StyledListItem onClick={() => {
+            navigate(`/book/${id}`)
+        }}>
             <img src={coverUrl} alt=""></img>
             <StyledBookInfo>
                 <span className="name">{name}</span>
@@ -41,7 +52,7 @@ const Book = ({ book: { id, name, author, year, coverUrl } }: BookProps) => {
                 {/* TODO: change year to publisher */}
                 <span className="year">{year}</span>
             </StyledBookInfo>
-            <span id="delete-button">x</span>
+            {hasDeleteButtons && <span id="delete-button">x</span>}
         </StyledListItem>)
 }
 

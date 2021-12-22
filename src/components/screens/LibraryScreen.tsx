@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import BookList from "components/BookList";
 import Loader from "components/Loader";
 import { Column } from "components/styled/utils";
@@ -23,11 +24,10 @@ export default () => {
 
     return <StyledScreenContainer>
         <StyledContainer>
-
             <StyledH1>Library</StyledH1>
             {loading ? <Loader></Loader> : (
                 <><span>search book by title, author, etc.</span>
-                    <input value={value} type="text" onChange={e => {
+                    <input value={value} type="text" placeholder="search here" onChange={e => {
                         setFiltered(handleSearchBooks({ books: allBooks as Book[], value: e.target.value }))
                         setValue(e.target.value);
                     }} />
@@ -44,8 +44,9 @@ const StyledBookListContainer = styled.div`
     padding: 2%;
     ul{
         flex-flow: row wrap;
-        gap: 2rem;
+        gap: 1rem;
         >*{
+            cursor: pointer;
             flex: 0 1 30%;
             min-width: 200px;
             background: ${({ theme }) => theme.colors.primary1}

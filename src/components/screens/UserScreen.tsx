@@ -2,13 +2,13 @@ import { useParams } from "@reach/router";
 import { Book, useUserQuery } from "graphql/types";
 import React from "react"
 import styled from "styled-components";
-import BookList from "./BookList";
-import { useMe } from "./hooks/me";
-import ImageUploader from "./ImageUploader";
-import Loader from "./Loader";
-import { Column, Row } from "./styled/utils";
-import StyledImage from "./StyledImage";
-import StyledUserInfo from "./StyledUserInfo";
+import BookList from "../BookList";
+import { useMe } from "../hooks/me";
+import ImageUploader from "../ImageUploader";
+import Loader from "../Loader";
+import { Column, Row } from "../styled/utils";
+import StyledImage from "../StyledImage";
+import StyledUserInfo from "../StyledUserInfo";
 export default () => {
     //ionako ce me.id trebat za dijeljenje knjiga
     const { me } = useMe();
