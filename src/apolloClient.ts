@@ -12,7 +12,7 @@ const cache = new InMemoryCache({
       fields: {
         profileImageUrl: {
           read(existing) {
-            return existing || "user_placeholder.png"
+            return existing || "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
           }
         }
       }
@@ -45,13 +45,6 @@ const httpLink = createUploadLink({
   credentials: "include",
 });
 
-// const wsLink = new WebSocketLink({
-//   uri: "wss://bookshare-backend1234.herokuapp.com/graphql",
-//   options: {
-//     reconnect: true,
-//     connectionParams: { authToken: localStorage.getItem("token") || null },
-//   },
-// });
 
 const authLink = setContext((_, { headers }) => {
   //gets the jwt from storage
@@ -64,18 +57,6 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
-
-// const terminatingLink = split(
-//   ({ query }: any) => {
-//     const definition = getMainDefinition(query);
-//     return (
-//       definition.kind === "OperationDefinition" &&
-//       definition.operation === "subscription"
-//     );
-//   },
-//   // wsLink,
-//   httpLink
-// );
 
 export default new ApolloClient({
   link: errorLink.concat(authLink).concat(httpLink),

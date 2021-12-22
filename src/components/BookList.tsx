@@ -6,13 +6,16 @@ import { useMe } from "./hooks/me";
 
 interface Props {
     books: TBook[]
+    heading?: string
 }
 
-export default ({ books }: Props) => {
+export default ({ books, heading }: Props) => {
 
     return (
         <StyledBookList>
-            {books && books.length > 0 ? books.map(book => book && <Book key={book.id} book={book as TBook}></Book>) : <span>No books here yet</span>}
+            {heading && <StyledHeading>{heading}</StyledHeading>}
+            {books && books.length > 0 ? books.map(book => book && <Book key={book.id} book={book as TBook}></Book>)
+                : <span id="noBooks">No books here yet</span>}
         </StyledBookList>
     )
 }
@@ -49,6 +52,14 @@ const StyledBookList = styled.ul`
     flex-flow: column nowrap;
     background: ${({ theme }) => theme.colors.primary1};
     >*{min-height: 6rem}
+    #noBooks{
+        align-self: center;
+    }
+`
+const StyledHeading = styled.h2`
+        align-self: center;
+        color: ${({ theme }) => theme.colors.primary5};
+        font-size: 1rem;
 `
 
 const StyledBookInfo = styled.div`
