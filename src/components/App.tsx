@@ -16,6 +16,7 @@ import Loader from "./Loader";
 import UserScreen from "./UserScreen";
 import MyBooksScreen from "./screens/MyBooksScreen";
 import WishlistScreen from "./screens/WishlistScreen";
+import LibraryScreen from "./screens/LibraryScreen";
 
 export default () => {
   const { data, error, loading } = useMeQuery();
@@ -45,9 +46,10 @@ export default () => {
             <RouterPage component={<AuthScreen />} path="/auth" />
             <RouterPage component={<UserList />} path="/users" />
             <RouterPage component={<UserScreen />} path="/user/:userId" />
-            <RouterPage component={<MeScreen />} path="/" />
+            <RouterPage component={<MyBooksScreen />} path="/"></RouterPage>
             <RouterPage component={<MyBooksScreen />} path="my_books"></RouterPage>
             <RouterPage component={<WishlistScreen />} path="wishlist"></RouterPage>
+            <RouterPage component={<LibraryScreen />} path="books"></RouterPage>
 
           </MotionRouter>
         </>)

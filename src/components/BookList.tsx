@@ -21,7 +21,9 @@ export default ({ books, heading }: Props) => {
 }
 
 interface BookProps {
-    book: TBook
+    book: TBook,
+    //TODO:
+    handleClick?: ((event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void) | undefined
 }
 
 

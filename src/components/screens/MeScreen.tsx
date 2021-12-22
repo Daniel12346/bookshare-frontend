@@ -1,3 +1,4 @@
+//TODO: remove component
 import { useMe } from "components/hooks/me";
 import styled from "styled-components"
 import Logout from "components/Logout";
