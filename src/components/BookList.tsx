@@ -63,6 +63,7 @@ const StyledBookList = styled.ul`
     display: flex;
     /* TODO: alternate row wrap */
     flex-flow: column nowrap;
+    align-content: space-between;
     background: ${({ theme }) => theme.colors.primary1};
     >*{min-height: 6rem}
     #noBooks{
@@ -78,6 +79,7 @@ const StyledHeading = styled.h2`
 const StyledBookInfo = styled.div`
     display: flex;
     flex-flow: column nowrap;
+    justify-content: space-between;
     span:not(:last-child){
         margin-bottom: 0.5rem;
     }

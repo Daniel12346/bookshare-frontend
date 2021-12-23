@@ -1,14 +1,9 @@
-import { navigate } from "@reach/router";
 import BookList from "components/BookList";
 import Loader from "components/Loader";
-import { Column } from "components/styled/utils";
-import { StyledButton } from "components/StyledButton";
 import { StyledH1 } from "components/StyledH1";
-import { ME_QUERY } from "graphql/queries";
-import { Book, useAddBookToOwnedMutation, useBooksQuery, useMeQuery } from "graphql/types";
+import { Book, useBooksQuery } from "graphql/types";
 import React, { useEffect, useState } from "react"
 import styled from "styled-components";
-import { stringIsEmpty } from "../../utils/stringIsEmpty";
 
 
 
@@ -47,7 +42,8 @@ const StyledBookListContainer = styled.div`
         gap: 1rem;
         >*{
             cursor: pointer;
-            flex: 0 1 30%;
+            flex: 0 1 auto;
+            max-width: 33%;
             min-width: 200px;
             background: ${({ theme }) => theme.colors.primary1}
         }
@@ -61,7 +57,7 @@ interface TSearch {
 const handleSearchBooks = ({ books, value }: TSearch) => {
     console.log(books, value);
     return books.filter(book =>
-        (book.name.includes(value) || book.author.includes(value) || book.year?.toString().includes(value))
+        (book.name.toLowerCase().includes(value) || book.author.toLowerCase().includes(value) || book.year?.toString().includes(value))
     )
 }
 

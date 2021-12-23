@@ -34,7 +34,9 @@ export default () => {
           <Nav>{
           }
             <StyledUserInfo>
-              <StyledImage src={data.me.profileImageUrl || ""} alt={`${data.me?.firstName}'s profile`}></StyledImage>
+              <Link to={`/user/${data.me.id}`}>
+                <StyledImage src={data.me.profileImageUrl || ""} alt={`${data.me?.firstName}'s profile`}></StyledImage>
+              </Link>
               <span>{`${data.me.firstName}`}</span>
             </StyledUserInfo>
             <StyledLinksContainer>

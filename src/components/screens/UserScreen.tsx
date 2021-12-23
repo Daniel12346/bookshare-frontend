@@ -1,5 +1,6 @@
 import { useParams } from "@reach/router";
-import { Book, useUserQuery } from "graphql/types";
+import Logout from "components/Logout";
+import { Book, LogInDocument, useUserQuery } from "graphql/types";
 import React from "react"
 import styled from "styled-components";
 import BookList from "../BookList";
@@ -25,7 +26,10 @@ export default () => {
             <Row id="userInfoContainer">
                 <StyledUserInfo>
                     <StyledImage src={user.profileImageUrl ?? ""}></StyledImage>
-                    {isMe && <ImageUploader></ImageUploader>}
+                    {isMe && <>
+                        <ImageUploader></ImageUploader>
+                        <Logout></Logout>
+                    </>}
                     <Column id="userInfo">
                         <Row>
                             <StyledUserName>{`${user.firstName} ${user.lastName}`}</StyledUserName>

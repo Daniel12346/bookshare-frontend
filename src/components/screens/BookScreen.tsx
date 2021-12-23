@@ -69,7 +69,7 @@ const StyledBookImageAndInfo = styled.div`
     min-width: 300px;
     flex-flow: row wrap;
     justify-content: space-between;
-    gap: 5%;
+    gap: 2rem;
     min-height: 30vh;
     height: auto;
     >*{
@@ -83,10 +83,11 @@ const StyledBookImageAndInfo = styled.div`
         justify-content: center;
     }
     img{
-        height: 100%;
         max-width: 60vw;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
+        max-height: 60vh;
+
     }
     >div{
         min-height: 5rem;
