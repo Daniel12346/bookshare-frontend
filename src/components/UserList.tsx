@@ -50,26 +50,11 @@ const StyledUserList = styled.ul`
   justify-content: center;
   margin-top: 1.5rem;
 
-  >*{margin-bottom: 0.5rem}
+  >*{
+    background: ${({ theme }) => theme.colors.background}}
+    margin-bottom: 0.5rem;
 
 
-// const StyledUserOptions = styled.div`
-// cursor: auto;
-// flex: 1 0 100%;
-// display: flex;
-// flex-flow: row nowrap;
-// align-items: center;
-// justify-content: space-evenly;
-// min-height: 2rem;
-// border-radius: 0 0 15px 15px;
-// margin-top: 0.5rem;
-// background: hsla(0,0%, 96%,1);
+`
 
-// span{
-//     cursor: pointer;
-// }
-// `;
-interface Props {
-  userId: string
-}
 

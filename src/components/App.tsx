@@ -1,14 +1,12 @@
 import React, { ReactNode } from "react";
 import { Router, Link } from "@reach/router";
 import { Location } from "@reach/router";
-import { AnimatePresence, motion } from "framer-motion";
 import UserList from "./UserList";
 import RouterPage from "./RouterPage";
 import Nav from "./Nav";
 import GlobalStyle from "./styled/GlobalStyle";
 import { useMeQuery } from "graphql/types";
 import AuthScreen from "./screens/AuthScreen";
-import MeScreen from "./screens/MeScreen";
 import styled from "styled-components";
 import StyledUserInfo from "./StyledUserInfo";
 import StyledImage from "./StyledImage";

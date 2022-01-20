@@ -10,7 +10,7 @@ export const theme = {
     primary6: "hsl(348,76%,25%)",
 
     accent1: "hsl(50, 75%, 96%)",
-    accent2: "",
+    accent2: "#EFE0C1",
     accent3: "",
     background: "#FFFFFF",
 

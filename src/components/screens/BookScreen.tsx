@@ -1,8 +1,13 @@
-import { useParams } from "@reach/router";
+import { navigate, useParams } from "@reach/router";
 import { useMe } from "components/hooks/me"
+import Loader from "components/Loader";
 import { Row } from "components/styled/utils";
+import StyledCard from "components/StyledCard";
+import StyledImage from "components/StyledImage";
+import StyledUserInfo from "components/StyledUserInfo";
+import UserList from "components/UserList";
 import { ME_QUERY } from "graphql/queries";
-import { useAddBookToOwnedMutation, useAddBookToWantedMutation, useBookQuery } from "graphql/types";
+import { useAddBookToOwnedMutation, useAddBookToWantedMutation, useBookQuery, useMeQuery, User, useUsersQuery } from "graphql/types";
 import React from "react"
 import styled from "styled-components";
 
@@ -40,6 +45,8 @@ export default () => {
                     <span onClick={handleAddToMyBooks}>Add to my books</span>
                     <span onClick={handleAddToWishlist}>Add to wishlist</span>
                 </Row>
+
+                <BookOwnerList users={book.ownedBy as User[]}></BookOwnerList>
             </>)
         }
     </StyledScreenContainer>
@@ -102,3 +109,51 @@ const StyledBookImageAndInfo = styled.div`
         }
     }
 `
+
+interface BookOwnerListProps {
+    users: User[]
+}
+
+const BookOwnerList = ({ users }: BookOwnerListProps) => {
+    const { data: meData } = useMeQuery();
+    return (
+        <StyledContainer>
+            <StyledUserList>
+                {users.length === 0 ? <span>No users own this book</span> : users.filter(user => user?.id !== meData?.me?.id).map(
+                    (user) =>
+                        user && (
+                            <StyledCard key={user.id} onClick={() => navigate(`/user/${user.id}`)}>
+                                <StyledUserInfo>
+                                    <StyledImage src={user.profileImageUrl || ""}></StyledImage>
+                                    <span>{user.firstName + " " + user.lastName}</span>
+                                </StyledUserInfo>
+                                {/* <StyledUserOptions>
+                    <span onClick={() => createChat({ variables: { userId: user.id } })}>Create chat</span>
+                    <AddToGroup userId={user.id}></AddToGroup>
+                  </StyledUserOptions> */}
+                            </StyledCard>
+                        )
+                )}
+            </StyledUserList>
+        </StyledContainer>
+    );
+};
+
+const StyledContainer = styled.div`
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 100%;
+  `
+const StyledUserList = styled.ul`
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+  
+    >*{
+        background: ${({ theme }) => theme.colors.primary1};
+        margin-bottom: 0.5rem}  
+  `
