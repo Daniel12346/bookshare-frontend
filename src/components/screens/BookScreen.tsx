@@ -45,7 +45,7 @@ export default () => {
                     <span onClick={handleAddToMyBooks}>Add to my books</span>
                     <span onClick={handleAddToWishlist}>Add to wishlist</span>
                 </Row>
-
+                <StyledSpan>Users who own this book</StyledSpan>
                 <BookOwnerList users={book.ownedBy as User[]}></BookOwnerList>
             </>)
         }
@@ -157,3 +157,10 @@ const StyledUserList = styled.ul`
         background: ${({ theme }) => theme.colors.primary1};
         margin-bottom: 0.5rem}  
   `
+const StyledSpan = styled.span`
+        margin-top: 3rem;
+        color: ${({ theme }) => theme.colors.primary2};
+        font-weight: 700;
+
+
+`
